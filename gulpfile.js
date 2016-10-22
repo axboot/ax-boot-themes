@@ -40,5 +40,5 @@ gulp.task('scss', function () {
  */
 gulp.task('default', function () {
     // SASS
-    gulp.watch('/**/*.scss', ['scss']);
+    gulp.watch('**/*.scss', ['scss']);
 });
