@@ -7,7 +7,7 @@
 @import "../plugins/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "../plugins/bourbon/app/assets/stylesheets/bourbon";
 
-@import "../src/modules/ax5ui";
+@import "ax5ui";
 @import "../src/modules/bootstrap-custom";
 @import "../src/modules/font-icon";
 @import "keyframe";
@@ -21,7 +21,7 @@
 @import "../src/modules/ax-tabs";
 @import "../src/modules/ax-markdown";
 
-@import "../src/plugins/ztree";
+@import "ztree";
 
 //== pages
 .ax-body {
@@ -32,3 +32,5 @@
     @import "../src/pages/error-page";
     @import "../src/pages/dashboard";
 }
+
+@import "custom";

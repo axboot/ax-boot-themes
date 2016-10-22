@@ -16,10 +16,12 @@ $ax-frame-header-tab-on-color: #fff !default;
 
 $ax-frame-aside-width: 220px !default;
 $ax-frame-aside-bg: #2B3A48 !default;
+$ax-frame-aside-border : 0 none !default;
 
 $ax-frame-foot-height: 30px !default;
 $ax-frame-foot-bg: #E2E2E2 !default;
 $ax-frame-foot-color: #7C7C7C !default;
+
 
 &.frame-set {
     overflow: hidden;
@@ -201,6 +203,7 @@ $ax-frame-foot-color: #7C7C7C !default;
             height: 100%;
             background-color: $ax-frame-aside-bg;
             padding-top: $ax-frame-header-tool-height + $ax-frame-header-height;
+            border-right: $ax-frame-aside-border;
 
             .ax-frame-aside-menu-holder {
                 height: 100%;
