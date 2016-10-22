@@ -1,0 +1,16 @@
+﻿{
+  "name": "ax-boot-themes",
+  "version": "1.0.0",
+  "devDependencies": {
+    "node-sass": "^3.3.0",
+    "gulp": "*",
+    "gulp-changed": "*",
+    "gulp-concat": "*",
+    "gulp-sass": "^2.1.1",
+    "gulp-uglify": "^1.5.1",
+    "gulp-plumber": "",
+    "gulp-notify": "",
+    "gulp-util": "*",
+    "gulp-clean": "^0.3.2"
+  }
+}
