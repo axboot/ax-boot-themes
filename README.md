@@ -48,7 +48,23 @@
 준비중 입니다.
 
 ## cocker
-준비중 입니다.
+
+
+![axboot cocker theme](assets/cocker-1.png)
+![axboot cocker theme](assets/cocker-2.png)
+![axboot cocker theme](assets/cocker-3.png)
+![axboot cocker theme](assets/cocker-4.png)
+
+### CDN
+
+**production**  
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/cocker/axboot.css
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/cocker/images/header-logo.png
+
+**development**  
+ - https://rawgit.com/axboot/ax-boot-themes/master/cocker/axboot.css
+ - https://rawgit.com/axboot/ax-boot-themes/master/cocker/images/header-logo.png
+ 
 
 ## doberman
 

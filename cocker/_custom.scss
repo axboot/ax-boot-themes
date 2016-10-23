@@ -1,5 +1,7 @@
 .ax-body {
 
+    $my-border-color: #e4e5e7;
+
     &.frame-set {
         #ax-frame-root {
             .ax-frame-header-tool {
@@ -17,13 +19,13 @@
                     .ax-frame-logout {
                         text-decoration: none;
                         /* Rectangle 12: */
-                        border: 1px solid $brand-info;
-                        border-radius: 3px;
-                        padding: 1px 8px;
+                        border: 1px solid #c6c6c6;
+                        border-radius: 10px;
+                        padding: 3px 8px;
                         /* button: */
-                        @include ax-background(top, $ax-frame-header-tool-user-info-btn-bg-colors);
+                        background: #fff;
                         font-size: 0.8em;
-                        color: $ax-frame-header-tool-user-info-color;
+                        color: #2a2a2a;
                         display: block;
                         i {
 
@@ -32,16 +34,18 @@
                 }
             }
             .ax-frame-header {
-                border-top: 1px solid #676767;
-                border-bottom: 1px solid #676767;
+                border-top: 1px solid $my-border-color;
+                border-bottom: 1px solid $my-border-color;
 
                 .cell-aside-handle {
                     i {
-                        background: #343539;
+                        box-sizing: border-box;
+                        border-radius: 50%;
+                        background: #8d909a;
                         color: #fff;
                         display: block;
                         height: $ax-frame-header-height - 20;
-                        line-height: $ax-frame-header-height - 20;
+                        line-height: $ax-frame-header-height - 22;
                         width: $ax-frame-header-height - 20;
                         font-size: 20px;
                     }
@@ -55,7 +59,7 @@
             }
             .ax-frame-header-tab {
                 #ax-frame-header-tab-container {
-                    border-top: 1px solid nth($ax-frame-header-tab-container-bg-colors, 1);
+                    border-top: 1px solid #eee;
                     &:before {
 
                     }
@@ -88,19 +92,28 @@
             }
             .ax-frame-aside {
 
-                .ax-frame-aside-menu-holder {
+                border-right: 1px solid $my-border-color;
 
+                .ax-frame-aside-menu-holder {
                     .aside-menu-item {
 
                         &.aside-menu-item-label {
+                            border-width: 2px;
                             border-color: #b1b1b1;
+                            color: #6a6c6f;
+                            font-weight: bold;
+                            //border-top: 1px solid $my-border-color;
+                            //border-bottom: 1px solid $my-border-color;
+
                             &:hover{
-                                border-color: $brand-info;
-                                background: #8a8a8a;
+                                background: #fff;
                             }
                             &.opend, &:hover{
-                                border-color: $brand-info;
+                                //border-top: 1px solid $my-border-color;
+                                //border-bottom: 1px solid $my-border-color;
                             }
+
+
                         }
                         &.aside-menu-item-tree-body{
 
@@ -110,8 +123,8 @@
                             .tree-holder{
                                 height: 300px;
                                 /* box: */
-                                background: #2A2A2A;
-                                border: 1px solid #676767;
+                                background: #fff;
+                                border: 1px solid $my-border-color;
                                 border-radius: 4px;
                                 overflow: auto;
                                 font-size: 1em;
@@ -120,6 +133,13 @@
                     }
                 }
             }
+            .ax-frame-foot {
+                border-top: 1px solid $my-border-color;
+                .ax-split-panel {
+
+                }
+            }
+
 
             &.show-aside {
                 .ax-frame-header-tool {
@@ -128,9 +148,9 @@
                 .ax-frame-header {
                     .cell-aside-handle {
                         i {
-                            background: #343539;
-                            color: $brand-info;
-                            border: 1px solid $brand-info;
+                            background: $ax-frame-header-tool-bg;
+                            color: $gray-light;
+                            border: 1px solid $my-border-color;
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-$asset-path: "../";
+$asset-path: "";
 $bootstrap-sass-asset-helper: false !default;
 //
 // Variables
@@ -29,9 +29,9 @@ $brand-danger:          #E97426 !default;
 //## Settings for some of the most global styles.
 
 //** Background color for `<body>`.
-$body-bg: #ECF0F5 !default;
+$body-bg: #f1f3f6 !default;
 //** Global text color on `<body>`.
-$text-color:            $gray-dark !default;
+$text-color:            #6a6c6f !default;
 
 //** Global textual link color.
 $link-color:            $brand-primary !default;
@@ -898,3 +898,28 @@ $dl-horizontal-offset:        $component-offset-horizontal !default;
 $dl-horizontal-breakpoint:    $grid-float-breakpoint !default;
 //** Horizontal line color.
 $hr-border:                   $gray-lighter !default;
+
+
+//== axboot
+$ax-frame-header-tool-height: 30px;
+$ax-frame-header-tool-bg: #f1f3f6;
+$ax-frame-header-tool-border: none;
+$ax-frame-header-tool-user-info-color: #84868a;
+$ax-frame-header-tool-user-info-btn-bg-colors: (#DE1985, #DE1985);
+
+$ax-frame-header-height: 50px;
+$ax-frame-header-bg: #fff;
+$ax-frame-header-tab-height: 30px;
+$ax-frame-header-tab-container-bg-colors: (#f7f9fa, #f7f9fa);
+$ax-frame-header-tab-bg-colors: (#fff, #fff);
+$ax-frame-header-tab-color: $text-color;
+$ax-frame-header-tab-border: 1px solid #e4e5e7;
+$ax-frame-header-tab-on-bg-colors: (#f7f9fa, #f7f9fa);
+$ax-frame-header-tab-on-color: $brand-info;
+
+$ax-frame-aside-width: 220px;
+$ax-frame-aside-bg: #f7f9fa;
+
+$ax-frame-foot-height: 30px;
+$ax-frame-foot-bg: $ax-frame-header-tool-bg;
+$ax-frame-foot-color: #3a3a3a;
