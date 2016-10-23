@@ -29,6 +29,8 @@
 
 ## arongi
 
+Design by Jowrney (http://flybasket.com/)
+
 ![axboot arongi theme](assets/arongi-1.png)
 ![axboot arongi theme](assets/arongi-2.png)
 ![axboot arongi theme](assets/arongi-3.png)
@@ -49,6 +51,7 @@
 
 ## cocker
 
+Design by Thomas Jang (https://github.com/thomasjang)
 
 ![axboot cocker theme](assets/cocker-1.png)
 ![axboot cocker theme](assets/cocker-2.png)
@@ -67,6 +70,8 @@
  
 
 ## doberman
+
+Design by Thomas Jang (https://github.com/thomasjang)
 
 ![axboot doberman theme](assets/doberman-1.png)
 ![axboot doberman theme](assets/doberman-2.png)
