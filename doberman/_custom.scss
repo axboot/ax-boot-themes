@@ -150,4 +150,19 @@
         }
     }
 
+    // dashboard
+    .main-panel{
+        background: #343539;
+        .card{
+            background: #ccc;
+            color: #111;
+            .title{
+                color: #222;
+            }
+            .footer hr {
+                border-color: #676767;
+            }
+        }
+    }
+
 }

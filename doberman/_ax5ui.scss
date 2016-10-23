@@ -9,7 +9,22 @@ $ax5mask-bg-opacity: 0.4;
 @import "../plugins/ax5ui-toast/src/scss/ax5toast_variables";
 @import "../plugins/ax5ui-toast/src/scss/ax5toast";
 
-//$ax5modal-easing-time-open: 0.0S;
+//== modal
+$ax5modal-z-index: 2000;
+$ax5modal-box-model: border-box;
+$ax5modal-bg: #000;
+$ax5modal-border: 1px solid #676767;
+$ax5modal-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.60);
+$ax5modal-body-padding: 0px;
+$ax5modal-header-padding: $panel-heading-padding;
+
+$ax5modal-header-addon-padding: 10px 10px;
+$ax5modal-header-addon-btn-padding: 0px 2px;
+
+$ax5modal-default-text: $panel-default-text;
+$ax5modal-default-border: 1px solid #676767;
+$ax5modal-default-header-bg: #252525;
+
 @import "../plugins/ax5ui-modal/src/scss/ax5modal_variables";
 @import "../plugins/ax5ui-modal/src/scss/ax5modal";
 
@@ -97,7 +112,7 @@ $ax5grid-column-border: 1px solid #676767;
 //== header
 $ax5grid-header-column-color: #79DBD7;
 $ax5grid-header-column-border: 1px solid #676767;
-$ax5grid-header-column-box-shadow: inset 1px 1px 0px 0px #444;
+$ax5grid-header-column-box-shadow: none;
 $ax5grid-header-column-bg-colors: (#444, #000);
 $ax5grid-header-column-hover-bg-colors: (#000, #000);
 $ax5grid-header-column-resizer-color: #BADC2D;
@@ -126,8 +141,8 @@ $ax5grid-page-navigation-btn-border: 0px none;
 $ax5grid-page-navigation-btn-border-radius: 5px;
 $ax5grid-page-navigation-btn-bg: transparent;
 $ax5grid-page-navigation-btn-font-size: 11px;
-$ax5grid-page-navigation-btn-color: #222;
-$ax5grid-page-navigation-btn-hover-bg: #888;
+$ax5grid-page-navigation-btn-color: #fff;
+$ax5grid-page-navigation-btn-hover-bg: #676767;
 $ax5grid-page-navigation-btn-hover-color: #fff;
 
 $ax5grid-page-status-font-size: 12px;
@@ -178,14 +193,26 @@ $ax5grid-resizer-size: 2px;
 @import "../plugins/ax5ui-grid/src/scss/ax5grid_variables";
 @import "../plugins/ax5ui-grid/src/scss/ax5grid";
 
+
+
 $ax5combobox-label-padding: 0px 3px;
+$ax5combobox-label-bg-colors: (#000, #000);
+$ax5combobox-label-border: 1px solid #676767;
+$ax5combobox-label-color: #BADC2D;
+
+$ax5combobox-option-group-bg: lighten(#2a2a2a, 5%);
+
+$ax5combobox-default-base-color: $gray;
+$ax5combobox-default-theme-color: #2a2a2a;
+$ax5combobox-default-hover-type: darken, 20%;
+
 @import "../plugins/ax5ui-combobox/src/scss/ax5combobox_variables";
 @import "../plugins/ax5ui-combobox/src/scss/ax5combobox";
 
 @import "../plugins/ax5ui-autocomplete/src/scss/ax5autocomplete_variables";
 @import "../plugins/ax5ui-autocomplete/src/scss/ax5autocomplete";
 
-$ax5layout-splitter-background: #ffbfc5;
+$ax5layout-splitter-background: #BADC2D;
 
 $ax5layout-tab-panel-label-border-top: 1px solid $body-bg;
 $ax5layout-tab-panel-label-border-bottom: 1px solid #676767;
@@ -231,11 +258,11 @@ $ax5layout-tab-panel-label-item-active-color: $brand-info;
 
 .ax-mask.form-mask {
     .ax-mask-bg {
-        background: transparent;
-        //opacity: 0.1;
+        background: #000;
+        opacity: 0.3;
     }
     .ax-mask-content {
-        color: #000;
+        color: $brand-success;
         text-shadow: none;
         font-size: 20px;
     }
