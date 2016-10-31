@@ -1,11 +1,23 @@
 @import "../plugins/ax5core/src/ax5-ui-mixin";
+
+$ax5dialog-inner-border : 1px solid #BADC2D;
 @import "../plugins/ax5ui-dialog/src/scss/ax5dialog_variables";
 @import "../plugins/ax5ui-dialog/src/scss/ax5dialog";
+.ax5-ui-dialog {
+    .ax-dialog-body {
+        .ax-dialog-buttons {
+            .btn{
+                padding: 5px 10px;
+            }
+        }
+    }
+}
 
 $ax5mask-bg-opacity: 0.4;
 @import "../plugins/ax5ui-mask/src/scss/ax5mask_variables";
 @import "../plugins/ax5ui-mask/src/scss/ax5mask";
 
+$ax5toast-border : 1px solid #BADC2D;
 @import "../plugins/ax5ui-toast/src/scss/ax5toast_variables";
 @import "../plugins/ax5ui-toast/src/scss/ax5toast";
 
@@ -13,7 +25,7 @@ $ax5mask-bg-opacity: 0.4;
 $ax5modal-z-index: 2000;
 $ax5modal-box-model: border-box;
 $ax5modal-bg: #000;
-$ax5modal-border: 1px solid #676767;
+$ax5modal-border: 1px solid #BADC2D;
 $ax5modal-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.60);
 $ax5modal-body-padding: 0px;
 $ax5modal-header-padding: $panel-heading-padding;
@@ -28,9 +40,42 @@ $ax5modal-default-header-bg: #252525;
 @import "../plugins/ax5ui-modal/src/scss/ax5modal_variables";
 @import "../plugins/ax5ui-modal/src/scss/ax5modal";
 
+//== calendar
+$ax5calendar-control-bg: ($panel-default-heading-bg); // color, (color1, color2), (pos, color1, color2) 모두 사용가능
+$ax5calendar-control-border: 1px solid #949494;
+$ax5calendar-control-border-radius: 5px;
+$ax5calendar-control-font-size: ceil(($font-size-base * 1.25));
+$ax5calendar-control-text-color: #BADC2D;
+$ax5calendar-control-hover-text-color: $brand-primary;
+
+$ax5calendar-header-bg: (#2A2A2A, #2A2A2A);
+$ax5calendar-header-border: 0px none;
+$ax5calendar-header-padding: 0px 2px;
+$ax5calendar-header-font-size: ceil(($font-size-base * 0.8));
+
+$ax5calendar-body-bg: (#2A2A2A, #2A2A2A);
+$ax5calendar-body-border: 0px none;
+$ax5calendar-body-font-size: ceil(($font-size-base * 1));
+$ax5calendar-body-animation-in: ax5-ui-calendar-fadein;
+$ax5calendar-body-animation-out: ax5-ui-calendar-fadeout;
+
+$ax5calendar-sun-text-color: #C78B81;
+$ax5calendar-sat-text-color: #32B4DC;
+
+$ax5calendar-date-bg: (#343539, #343539);
+$ax5calendar-date-text-color: #C3C4C6;
+$ax5calendar-live-bg: (#000000, #000000);
+$ax5calendar-live-text-color: #6D6E70;
+$ax5calendar-hover-bg: (#BADC2D, #BADC2D);
+$ax5calendar-hover-text-color: #000;
+$ax5calendar-focus-bg: (#E67241, #E67241);
+$ax5calendar-focus-text-color: #fff;
+$ax5calendar-period-bg: (#82d3fa, #82d3fa);
+$ax5calendar-period-text-color: #fff;
 @import "../plugins/ax5ui-calendar/src/scss/ax5calendar_variables";
 @import "../plugins/ax5ui-calendar/src/scss/ax5calendar";
 
+//== picker
 $ax5picker-easing-time-open: 0.1s;
 $ax5picker-easing-time-close: 0.1s;
 @import "../plugins/ax5ui-picker/src/scss/ax5picker_variables";
@@ -98,6 +143,16 @@ $ax5picker-easing-time-close: 0.1s;
         }
     }
 }
+
+$ax5select-label-bg-colors: (#000, #000);
+$ax5select-label-border: 1px solid #676767;
+$ax5select-label-color: #BADC2D;
+
+$ax5select-option-group-bg: lighten(#2a2a2a, 5%);
+
+$ax5select-default-base-color: $gray;
+$ax5select-default-theme-color: #2a2a2a;
+$ax5select-default-hover-type: darken, 20%;
 
 @import "../plugins/ax5ui-select/src/scss/ax5select_variables";
 @import "../plugins/ax5ui-select/src/scss/ax5select";
@@ -208,6 +263,17 @@ $ax5combobox-default-hover-type: darken, 20%;
 
 @import "../plugins/ax5ui-combobox/src/scss/ax5combobox_variables";
 @import "../plugins/ax5ui-combobox/src/scss/ax5combobox";
+
+$ax5autocomplete-label-padding: 0px 3px;
+$ax5autocomplete-label-bg-colors: (#000, #000);
+$ax5autocomplete-label-border: 1px solid #676767;
+$ax5autocomplete-label-color: #BADC2D;
+
+$ax5autocomplete-option-group-bg: lighten(#2a2a2a, 5%);
+
+$ax5autocomplete-default-base-color: $gray;
+$ax5autocomplete-default-theme-color: #2a2a2a;
+$ax5autocomplete-default-hover-type: darken, 20%;
 
 @import "../plugins/ax5ui-autocomplete/src/scss/ax5autocomplete_variables";
 @import "../plugins/ax5ui-autocomplete/src/scss/ax5autocomplete";

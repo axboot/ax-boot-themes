@@ -1,6 +1,15 @@
 @import "../plugins/ax5core/src/ax5-ui-mixin";
 @import "../plugins/ax5ui-dialog/src/scss/ax5dialog_variables";
 @import "../plugins/ax5ui-dialog/src/scss/ax5dialog";
+.ax5-ui-dialog {
+    .ax-dialog-body {
+        .ax-dialog-buttons {
+            .btn{
+                padding: 5px 10px;
+            }
+        }
+    }
+}
 
 $ax5mask-bg-opacity: 0.4;
 @import "../plugins/ax5ui-mask/src/scss/ax5mask_variables";
@@ -9,15 +18,14 @@ $ax5mask-bg-opacity: 0.4;
 @import "../plugins/ax5ui-toast/src/scss/ax5toast_variables";
 @import "../plugins/ax5ui-toast/src/scss/ax5toast";
 
-//== modal
-
+//$ax5modal-easing-time-open: 0.0S;
 @import "../plugins/ax5ui-modal/src/scss/ax5modal_variables";
 @import "../plugins/ax5ui-modal/src/scss/ax5modal";
 
 @import "../plugins/ax5ui-calendar/src/scss/ax5calendar_variables";
 @import "../plugins/ax5ui-calendar/src/scss/ax5calendar";
 
-$ax5picker-easing-time-open: 0.1s;
+$ax5picker-easing-time-open: 0.2s;
 $ax5picker-easing-time-close: 0.1s;
 @import "../plugins/ax5ui-picker/src/scss/ax5picker_variables";
 @import "../plugins/ax5ui-picker/src/scss/ax5picker";
@@ -30,7 +38,7 @@ $ax5picker-easing-time-close: 0.1s;
 
 .ax5-ui-menubar {
     &.axboot {
-        @include menubar-variant($text-color, #979797, #fff, #fff, $text-color, transparent, $brand-info);
+        @include menubar-variant(#2C2C2C, #979797, #fff, #fff, #2c2c2c, $body-bg, #3DACFC);
 
         .ax-menu-body {
             .ax-menu-item {
@@ -43,12 +51,12 @@ $ax5picker-easing-time-close: 0.1s;
                 }
             }
         }
+
     }
 }
 
 .ax5-ui-menu {
-    &.primary {
-        @include menu-variant($brand-info, #e4e5e7, #4c4e54, #fff, $text-color, $body-bg, $brand-info);
+    &.info {
         .ax-menu-body {
             .ax-menu-item {
                 .ax-menu-item-cell {
@@ -58,7 +66,7 @@ $ax5picker-easing-time-close: 0.1s;
         }
     }
     &.axboot {
-        @include menu-variant($brand-info, #e4e5e7, #4c4e54, #fff, $text-color, $body-bg, $brand-info);
+        @include menu-variant(#2C2C2C, #979797, #fff, #fff, #2c2c2c, $body-bg, #3DACFC);
         .ax-menu-body {
             .ax-menu-item {
                 height: 20px;
@@ -84,15 +92,29 @@ $ax5picker-easing-time-close: 0.1s;
     }
 }
 
+$ax5select-default-base-color: #444;
+$ax5select-default-theme-color: #D8D8D8;
+$ax5select-default-hover-type: darken, 0%;
 @import "../plugins/ax5ui-select/src/scss/ax5select_variables";
 @import "../plugins/ax5ui-select/src/scss/ax5select";
+
+//
+$ax5grid-border: 1px solid #D8D8D8;
 
 @import "../plugins/ax5ui-grid/src/scss/ax5grid_variables";
 @import "../plugins/ax5ui-grid/src/scss/ax5grid";
 
+$ax5combobox-label-padding: 0px 3px;
+$ax5combobox-default-base-color: #444;
+$ax5combobox-default-theme-color: #D8D8D8;
+$ax5combobox-default-hover-type: darken, 0%;
 @import "../plugins/ax5ui-combobox/src/scss/ax5combobox_variables";
 @import "../plugins/ax5ui-combobox/src/scss/ax5combobox";
 
+$ax5autocomplete-label-padding: 0px 3px;
+$ax5autocomplete-default-base-color: #444;
+$ax5autocomplete-default-theme-color: #D8D8D8;
+$ax5autocomplete-default-hover-type: darken, 1%;
 @import "../plugins/ax5ui-autocomplete/src/scss/ax5autocomplete_variables";
 @import "../plugins/ax5ui-autocomplete/src/scss/ax5autocomplete";
 
@@ -131,12 +153,6 @@ $ax5layout-tab-panel-label-item-active-bg-colors: (#fff, #fff);
     }
 }
 
-.ax-mask {
-    .ax-mask-bg {
-        background: #fff;
-    }
-}
-
 .ax-mask.danger {
     .ax-mask-bg {
         background: #7a0000;
@@ -145,11 +161,11 @@ $ax5layout-tab-panel-label-item-active-bg-colors: (#fff, #fff);
 
 .ax-mask.form-mask {
     .ax-mask-bg {
-        background: #fff;
+        background: $body-bg;
         opacity: 0.3;
     }
     .ax-mask-content {
-        color: $brand-info;
+        color: #000;
         text-shadow: none;
         font-size: 20px;
     }

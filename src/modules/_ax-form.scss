@@ -60,6 +60,15 @@ $ax-search-tbl-label-color: #363636 !default;
             .form-control, .btn {
                 vertical-align: middle;
             }
+            .form-group {
+                margin-bottom: 0;
+                label {
+                    font-weight: normal;
+                    line-height: 1em;
+                    vertical-align: middle;
+                    margin: 7px;
+                }
+            }
             .form-group{
                 margin-bottom: 0;
             }
