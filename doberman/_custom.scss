@@ -52,10 +52,16 @@
                 #ax-top-menu {
 
                 }
+                #ax-fullscreen-handel {
+                    i {
+                        background: #343539;
+                        color: $brand-info;
+                        border: 1px solid $brand-info;
+                    }
+                }
             }
             .ax-frame-header-tab {
                 #ax-frame-header-tab-container {
-                    border-top: 1px solid nth($ax-frame-header-tab-container-bg-colors, 1);
                     &:before {
 
                     }
@@ -64,7 +70,7 @@
                     }
                     .tab-item {
 
-                        span[data-toggle="tooltip"]{
+                        span[data-toggle="tooltip"] {
 
                         }
 
@@ -94,20 +100,20 @@
 
                         &.aside-menu-item-label {
                             border-color: #b1b1b1;
-                            &:hover{
+                            &:hover {
                                 border-color: $brand-info;
                                 background: #8a8a8a;
                             }
-                            &.opend, &:hover{
+                            &.opend, &:hover {
                                 border-color: $brand-info;
                             }
                         }
-                        &.aside-menu-item-tree-body{
+                        &.aside-menu-item-tree-body {
 
-                            &.opend{
+                            &.opend {
 
                             }
-                            .tree-holder{
+                            .tree-holder {
                                 height: 300px;
                                 /* box: */
                                 background: #2A2A2A;
@@ -147,11 +153,22 @@
                     padding-left: $ax-frame-aside-width;
                 }
             }
+            &.full-screen {
+                .ax-frame-header {
+                    top: 0;
+                    #ax-fullscreen-handel {
+                        i {
+                            background: #343539;
+                            color: #fff;
+                        }
+                    }
+                }
+            }
         }
     }
 
     // dashboard
-    .main-panel{
+    .main-panel {
         /*
         background: #343539;
         .card{
