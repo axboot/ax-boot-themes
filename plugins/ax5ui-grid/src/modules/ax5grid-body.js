@@ -249,6 +249,21 @@
         });
     };
 
+    var updateRowStateAll = function (_states, _data) {
+        var self = this;
+        var cfg = this.config;
+
+        var processor = {
+            "selected": function (_dindex) {
+                GRID.body.repaint.call(this, true);
+            }
+        };
+        _states.forEach(function (_state) {
+            if (!processor[_state]) throw 'invaild state name';
+            processor[_state].call(self, _data);
+        });
+    };
+
     var init = function () {
         var self = this;
 
@@ -564,7 +579,7 @@
                     if (_value !== null && typeof _value !== "undefined") returnValue = _value;
                 }
 
-                return returnValue.replace(/[<>]/g, function (tag) {
+                return (typeof returnValue === "number") ? returnValue: returnValue.replace(/[<>]/g, function (tag) {
                     return tagsToReplace[tag] || tag;
                 });
             }
@@ -1937,7 +1952,6 @@
                         }
 
                         GRID.data.setValue.call(self, dindex, col.key, newValue);
-
                         updateRowState.call(self, ["cellChecked"], dindex, {
                             key: col.key, rowIndex: rowIndex, colIndex: colIndex,
                             editorConfig: col.editor.config, checked: checked
@@ -1963,12 +1977,17 @@
             }
             if (this.isInlineEditing) {
 
+                var originalValue = GRID.data.getValue.call(self, dindex, col.key);
                 var initValue = (function (__value, __editor) {
+                    if(U.isNothing(__value)){
+                        __value = U.isNothing(originalValue) ? "" : originalValue;
+                    }
+
                     if (__editor.type == "money") {
                         return U.number(__value, {"money": true});
                     }
                     else {
-                        return __value || "";
+                        return __value;
                     }
                 }).call(this, _initValue, editor);
 
@@ -2124,6 +2143,7 @@
         repaintCell: repaintCell,
         repaintRow: repaintRow,
         updateRowState: updateRowState,
+        updateRowStateAll: updateRowStateAll,
         scrollTo: scrollTo,
         blur: blur,
         moveFocus: moveFocus,
