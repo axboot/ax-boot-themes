@@ -28,42 +28,11 @@ $ax-frame-foot-color: #7C7C7C !default;
 
     #ax-frame-root {
         min-width: 960px;
+        $ax-frame-header-tool-height: 0;
+        $ax-frame-foot-height: 0;
         // 프레임셋 용
         .ax-frame-header-tool {
-            @include transition(all 0.3s ease-in-out);
-            //@include animation(SLIDE-DOWN 0.5s ease-in-out forwards);
-            z-index: 1;
-            position: relative;
-            height: $ax-frame-header-tool-height;
-            background-color: $ax-frame-header-tool-bg;
-            border-bottom: $ax-frame-header-tool-border;
-
-            .ax-frame-user-info {
-                height: 100%;
-                width: auto;
-                margin-right: 10px;
-                margin-left: auto;
-                color: $ax-frame-header-tool-user-info-color;
-                font-size: 0.8em;
-                a {
-                    color: $ax-frame-header-tool-user-info-color;
-                }
-                .ax-frame-logout {
-                    text-decoration: none;
-                    /* Rectangle 12: */
-                    border: 2px solid #FFFFFF;
-                    border-radius: 8px;
-                    padding: 3px 8px;
-                    /* button: */
-                    @include ax-background(top, $ax-frame-header-tool-user-info-btn-bg-colors);
-                    font-size: 0.8em;
-                    color: $ax-frame-header-tool-user-info-color;
-                    display: block;
-                    i {
-
-                    }
-                }
-            }
+            display: none;
         }
         .ax-frame-header {
             //@include animation(FADE-IN 0.5s ease-in-out forwards);
@@ -277,20 +246,7 @@ $ax-frame-foot-color: #7C7C7C !default;
             }
         }
         .ax-frame-foot {
-            //@include transition(all 0.3s ease-in-out);
-            @include animation(SLIDE-UP 0.3s ease-in-out forwards);
-            z-index: 1;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: $ax-frame-foot-height;
-            background-color: $ax-frame-foot-bg;
-            font-size: 0.8em;
-            color: $ax-frame-foot-color;
-            .ax-split-panel {
-                padding: 0 10px;
-            }
+            display: none;
         }
 
         &.show-aside {
