@@ -58,6 +58,21 @@ gulp.task('scss', function () {
 
 });
 
+gulp.task('scss-ie9', function () {
+
+    for (var i = 0, l = THEMES.length; i < l; i++) {
+        gulp.src([
+            THEMES[i] + '/axboot-01.scss',
+            THEMES[i] + '/axboot-02.scss',
+            THEMES[i] + '/axboot-03.scss'
+        ])
+            .pipe(plumber({errorHandler: errorAlert}))
+            .pipe(sass({outputStyle: 'compressed'}))
+            .pipe(gulp.dest(THEMES[i] + '/'));
+    }
+
+});
+
 gulp.task('import-ax5ui-file', function () {
     /*
      ax5ui 소스를 로컬에서 직접 복붙하는 타스크

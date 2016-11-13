@@ -11,7 +11,7 @@
   "title": "AXBoot :: Advanced Web Application Development Framework",
   "copyrights": "AXBOOT 2.0.0 - Web Application Framework © 2010-2016",
   "logo": {
-    "header": "[테마별주소]/images/header-logo.png",
+    "header": "/assets/images/header-logo.png",
     "login": "/assets/images/login-logo.png",
     "logo": "logo.png"
   },
@@ -21,11 +21,31 @@
   "layout": {
     "leftSideMenu": "visible"
   },
+  "sessionCookie": "a_x_b_a_a_t_k",
   "extendedCss": [
-    "[테마별주소]axboot.css"
+    "/assets/css/axboot.css"
+  ],
+  "extendedCssforIE9": [
+    "/assets/css/axboot-01.css",
+    "/assets/css/axboot-02.css",
+    "/assets/css/axboot-03.css"
   ]
 }
+
 ```
+
+> ie9의 경우 CSS 셀렉터의 갯수가 제한이 있어 제대로 작동하지 않는다는 이슈가 있었습니다. 그런 이유로 axboot.css를 분리된 형태로도 제공 해드립니다. 
+`extendedCssforIE9` 에 넣어주시면 됩니다.
+
+```html
+<link rel="stylesheet" type="text/css" href="/assets/css/axboot.css"/>
+<!--[if lt IE 10]>
+    <link rel="stylesheet" type="text/css" href="/assets/css/axboot-01.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/axboot-02.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/axboot-03.css"/>
+<![endif]-->
+```
+설정이 제대로 되었다면 위와 같이 소스가 빌드됩니다.
 
 ## arongi
 
@@ -45,6 +65,11 @@ Design by Jowrney (http://flybasket.com/)
 **development**  
  - https://rawgit.com/axboot/ax-boot-themes/master/arongi/axboot.css
  - https://rawgit.com/axboot/ax-boot-themes/master/arongi/images/header-logo.png
+ 
+ **for ie9**
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/arongi/axboot-01.css
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/arongi/axboot-02.css
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/arongi/axboot-03.css
  
 ## bulldog
 준비중 입니다.
@@ -68,6 +93,10 @@ Design by Thomas Jang (https://github.com/thomasjang)
  - https://rawgit.com/axboot/ax-boot-themes/master/cocker/axboot.css
  - https://rawgit.com/axboot/ax-boot-themes/master/cocker/images/header-logo.png
  
+ **for ie9**
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/cocker/axboot-01.css
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/cocker/axboot-02.css
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/cocker/axboot-03.css
 
 ## doberman
 
@@ -87,3 +116,8 @@ Design by Thomas Jang (https://github.com/thomasjang)
 **development**  
  - https://rawgit.com/axboot/ax-boot-themes/master/doberman/axboot.css
  - https://rawgit.com/axboot/ax-boot-themes/master/doberman/images/header-logo.png
+ 
+ **for ie9**
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/doberman/axboot-01.css
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/doberman/axboot-02.css
+ - https://cdn.rawgit.com/axboot/ax-boot-themes/master/doberman/axboot-03.css
