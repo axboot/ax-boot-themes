@@ -53,7 +53,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
          * ax5 version
          * @member {String} ax5.info.version
          */
-        var version = "1.3.24";
+        var version = "${VERSION}";
 
         /**
          * ax5 library path
@@ -2006,6 +2006,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
          * "&amp;" represents the & sign.
          * "&quot; represents the " mark.
          * [Character entity references](https://www.w3.org/TR/html401/charset.html#h-5.3)
+         * @method ax5.util.escapeHtml
          * @param {String} s
          * @returns {string}
          * @example
@@ -2036,6 +2037,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         /**
          * HTML 문자열을 unescape 처리합니다.
          * escapeHtml를 참고하세요.
+         * @method ax5.util.unescapeHtml
          * @param {String} s
          * @returns {string}
          * @example
@@ -2061,6 +2063,99 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                         return match;
                 }
             });
+        }
+
+        /**
+         * @method ax5.util.string
+         * @param {String} tmpl
+         * @param {*} args
+         * @return {ax5string}
+         * @example
+         * ```js
+         * ax5.util.string("{0} is dead, but {1} is alive! {0} {2}").format("ASP", "ASP.NET");
+         * ax5.util.string("{0} is dead, but {1} is alive! {0} {2}").format(["ASP", "ASP.NET"]);
+         * ax5.util.stinrg("{0} counts").format(100);
+         * ```
+         */
+        function string(_string) {
+            function ax5string(_string) {
+                this.value = _string;
+                this.toString = function () {
+                    return this.value;
+                };
+                /**
+                 * @method ax5.util.string.format
+                 * @returns {*}
+                 */
+                this.format = function () {
+                    var args = [];
+                    for (var i = 0, l = arguments.length; i < l; i++) {
+                        args = args.concat(arguments[i]);
+                    }
+                    return this.value.replace(/{(\d+)}/g, function (match, number) {
+                        return typeof args[number] != 'undefined' ? args[number] : match;
+                    });
+                };
+                /**
+                 * @method ax5.util.string.escape
+                 * @returns {*}
+                 */
+                this.escape = function () {
+                    return escapeHtml(this.value);
+                };
+                /**
+                 * @method ax5.util.string.unescape
+                 * @returns {*}
+                 */
+                this.unescape = function () {
+                    return unescapeHtml(this.value);
+                };
+                /**
+                 * @method ax5.util.string.encode
+                 * @returns {*}
+                 */
+                this.encode = function () {
+                    return encode(this.value);
+                };
+                /**
+                 * @method ax5.util.string.decode
+                 * @returns {*}
+                 */
+                this.decode = function () {
+                    return decode(this.value);
+                };
+                /**
+                 * @method ax5.util.string.left
+                 * @param {String|Number} pos - 찾을 문자열 또는 포지션
+                 * @returns {*}
+                 */
+                this.left = function (_pos) {
+                    return left(this.value, _pos);
+                };
+                /**
+                 * @method ax5.util.string.right
+                 * @param {String|Number} pos - 찾을 문자열 또는 포지션
+                 * @returns {*}
+                 */
+                this.right = function (_pos) {
+                    return right(this.value, _pos);
+                };
+                /**
+                 * @method ax5.util.string.camelCase
+                 * @returns {*}
+                 */
+                this.camelCase = function () {
+                    return camelCase(this.value);
+                };
+                /**
+                 * @method ax5.util.string.snakeCase
+                 * @returns {*}
+                 */
+                this.snakeCase = function () {
+                    return snakeCase(this.value);
+                };
+            }
+            return new ax5string(_string);
         }
 
         return {
@@ -2116,7 +2211,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             selectRange: selectRange,
             debounce: debounce,
             escapeHtml: escapeHtml,
-            unescapeHtml: unescapeHtml
+            unescapeHtml: unescapeHtml,
+
+            string: string
         };
     }();
 
@@ -2428,14 +2525,148 @@ ax5.info.errorMsg["ax5combobox"] = {
         }
     })(window.console || {}); // Using `this` for web workers.
 
+
+    // Modernizr style test
+    if (!(window.webkitMatchMedia || window.mozMatchMedia || window.oMatchMedia || window.msMatchMedia || window.matchMedia)) {
+        var root = document.getElementsByTagName('html')[0];
+        root.className += ' no-matchmedia';
+    }
+
+    /*! matchMedia() polyfill - Test a CSS media type/query in JS. Authors & copyright (c) 2012: Scott Jehl, Paul Irish, Nicholas Zakas, David Knight. Dual MIT/BSD license */
+    window.matchMedia || (window.matchMedia = function () {
+        "use strict";
+
+        // For browsers that support matchMedium api such as IE 9 and webkit
+
+        var styleMedia = window.styleMedia || window.media;
+
+        // For those that don't support matchMedium
+        if (!styleMedia) {
+            var style = document.createElement('style'),
+                script = document.getElementsByTagName('script')[0],
+                info = null;
+
+            style.type = 'text/css';
+            style.id = 'matchmediajs-test';
+
+            script.parentNode.insertBefore(style, script);
+
+            // 'style.currentStyle' is used by IE <= 8 and 'window.getComputedStyle' for all other browsers
+            info = 'getComputedStyle' in window && window.getComputedStyle(style, null) || style.currentStyle;
+
+            styleMedia = {
+                matchMedium: function matchMedium(media) {
+                    var text = '@media ' + media + '{ #matchmediajs-test { width: 1px; } }';
+
+                    // 'style.styleSheet' is used by IE <= 8 and 'style.textContent' for all other browsers
+                    if (style.styleSheet) {
+                        style.styleSheet.cssText = text;
+                    } else {
+                        style.textContent = text;
+                    }
+
+                    // Test if media query is true or false
+                    return info.width === '1px';
+                }
+            };
+        }
+
+        return function (media) {
+            return {
+                matches: styleMedia.matchMedium(media || 'all'),
+                media: media || 'all'
+            };
+        };
+    }());
+
+    /*! matchMedia() polyfill addListener/removeListener extension. Author & copyright (c) 2012: Scott Jehl. Dual MIT/BSD license */
+    (function () {
+        // Bail out for browsers that have addListener support
+        if (window.matchMedia && window.matchMedia('all').addListener) {
+            return false;
+        }
+
+        var localMatchMedia = window.matchMedia,
+            hasMediaQueries = localMatchMedia('only all').matches,
+            isListening = false,
+            timeoutID = 0,
+            // setTimeout for debouncing 'handleChange'
+        queries = [],
+            // Contains each 'mql' and associated 'listeners' if 'addListener' is used
+        handleChange = function handleChange(evt) {
+            // Debounce
+            clearTimeout(timeoutID);
+
+            timeoutID = setTimeout(function () {
+                for (var i = 0, il = queries.length; i < il; i++) {
+                    var mql = queries[i].mql,
+                        listeners = queries[i].listeners || [],
+                        matches = localMatchMedia(mql.media).matches;
+
+                    // Update mql.matches value and call listeners
+                    // Fire listeners only if transitioning to or from matched state
+                    if (matches !== mql.matches) {
+                        mql.matches = matches;
+
+                        for (var j = 0, jl = listeners.length; j < jl; j++) {
+                            listeners[j].call(window, mql);
+                        }
+                    }
+                }
+            }, 30);
+        };
+
+        window.matchMedia = function (media) {
+            var mql = localMatchMedia(media),
+                listeners = [],
+                index = 0;
+
+            mql.addListener = function (listener) {
+                // Changes would not occur to css media type so return now (Affects IE <= 8)
+                if (!hasMediaQueries) {
+                    return;
+                }
+
+                // Set up 'resize' listener for browsers that support CSS3 media queries (Not for IE <= 8)
+                // There should only ever be 1 resize listener running for performance
+                if (!isListening) {
+                    isListening = true;
+                    window.addEventListener('resize', handleChange, true);
+                }
+
+                // Push object only if it has not been pushed already
+                if (index === 0) {
+                    index = queries.push({
+                        mql: mql,
+                        listeners: listeners
+                    });
+                }
+
+                listeners.push(listener);
+            };
+
+            mql.removeListener = function (listener) {
+                for (var i = 0, il = listeners.length; i < il; i++) {
+                    if (listeners[i] === listener) {
+                        listeners.splice(i, 1);
+                    }
+                }
+            };
+
+            return mql;
+        };
+    })();
+
     // extend innerWidth ..
     var html = document.getElementsByTagName('html')[0];
     var body = document.getElementsByTagName('body')[0];
 
+    /*
     if (!window.innerWidth) window.innerWidth = html.clientWidth;
     if (!window.innerHeight) window.innerHeight = html.clientHeight;
     if (!window.scrollX) window.scrollX = window.pageXOffset || html.scrollLeft;
     if (!window.scrollY) window.scrollY = window.pageYOffset || html.scrollTop;
+    */
 }).call(window);
 /**
  * Refer to this by {@link ax5}.
