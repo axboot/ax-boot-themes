@@ -1,13 +1,12 @@
 // ax5.ui.autocomplete
 (function () {
 
-    var UI = ax5.ui;
-    var U = ax5.util;
-    var AUTOCOMPLETE;
+    const UI = ax5.ui;
+    const U = ax5.util;
+    let AUTOCOMPLETE;
 
     UI.addClass({
-        className: "autocomplete",
-        version: "${VERSION}"
+        className: "autocomplete"
     }, (function () {
         /**
          * @class ax5autocomplete
@@ -49,9 +48,8 @@
          * });
          * ```
          */
-        var ax5autocomplete = function () {
-            var
-                self = this,
+        return function () {
+            var self = this,
                 cfg;
 
             this.instanceId = ax5.getGuid();
@@ -383,7 +381,7 @@
                         data.multiple = item.multiple;
                         data.lang = item.lang;
                         data.options = item.options;
-                        this.activeautocompleteOptionGroup.find('[data-els="content"]').html(jQuery(AUTOCOMPLETE.tmpl.get.call(this, "options", data, item.columnKeys)));
+                        this.activeautocompleteOptionGroup.find('[data-els="content"]').html(AUTOCOMPLETE.tmpl.get.call(this, "options", data, item.columnKeys));
 
                         focusWord.call(this, this.activeautocompleteQueueIndex, searchWord);
                         alignAutocompleteOptionGroup.call(this);
@@ -811,7 +809,7 @@
             this.init = function () {
                 this.onStateChanged = cfg.onStateChanged;
                 this.onChange = cfg.onChange;
-                jQuery(window).bind("resize.ax5autocomplete-display-" + this.instanceId, (function () {
+                jQuery(window).on("resize.ax5autocomplete-display-" + this.instanceId, (function () {
                     alignAutocompleteDisplay.call(this);
                 }).bind(this));
             };
@@ -881,7 +879,7 @@
                         },
                         'keyUp': function (queIdx, e) {
                             /// 약속된 키 이벤트가 발생하면 stopEvent를 통해 keyUp 이벤트가 발생되지 않도록 막아주는 센스
-                            if (e.which == ax5.info.eventKeys.ESC && self.activeautocompleteQueueIndex === -1) { // ESC키를 누르고 옵션그룹이 열려있지 않은 경우
+                            if (e.which == ax5.info.eventKeys.ESC && this.activeautocompleteQueueIndex === -1) { // ESC키를 누르고 옵션그룹이 열려있지 않은 경우
                                 U.stopEvent(e);
                                 return this;
                             }
@@ -891,8 +889,8 @@
                                 this.close();
                                 return this;
                             }
-                            if (self.activeautocompleteQueueIndex != queIdx) { // 닫힌 상태 인경우
-                                self.open(queIdx); // open and align
+                            if (this.activeautocompleteQueueIndex != queIdx) { // 닫힌 상태 인경우
+                                this.open(queIdx); // open and align
                             }
                             if (ctrlKeys[e.which]) {
                                 U.stopEvent(e);
@@ -999,7 +997,6 @@
                             }
 
                             item.$target.append(item.$display);
-
                         }
                         else {
                             printLabel.call(this, queIdx);
@@ -1008,26 +1005,25 @@
                         alignAutocompleteDisplay.call(this);
 
                         item.$display
-                            .unbind('click.ax5autocomplete')
-                            .bind('click.ax5autocomplete', autocompleteEvent.click.bind(this, queIdx));
+                            .off('click.ax5autocomplete')
+                            .on('click.ax5autocomplete', autocompleteEvent.click.bind(this, queIdx));
 
                         // autocomplete 태그에 대한 이벤트 감시
-
                         item.$displayLabelInput
                             .off("focus.ax5autocomplete")
                             .on("focus.ax5autocomplete", autocompleteEvent.focus.bind(this, queIdx))
                             .off("blur.ax5autocomplete")
                             .on("blur.ax5autocomplete", autocompleteEvent.blur.bind(this, queIdx))
                             .off("keydown.ax5autocomplete")
-                            .on("keydown.ax5autocomplete", autocompleteEvent.keyUp.bind(this, queIdx))
+                            .on("keydown.ax5autocomplete", autocompleteEvent.keyDown.bind(this, queIdx))
                             .off("keyup.ax5autocomplete")
-                            .on("keyup.ax5autocomplete", autocompleteEvent.keyDown.bind(this, queIdx));
+                            .on("keyup.ax5autocomplete", autocompleteEvent.keyUp.bind(this, queIdx));
 
                         // select 태그에 대한 change 이벤트 감시
 
                         item.$select
-                            .unbind('change.ax5autocomplete')
-                            .bind('change.ax5autocomplete', autocompleteEvent.selectChange.bind(this, queIdx));
+                            .off('change.ax5autocomplete')
+                            .on('change.ax5autocomplete', autocompleteEvent.selectChange.bind(this, queIdx));
 
                         data = null;
                         item = null;
@@ -1137,11 +1133,11 @@
                     data.options = [];
 
                     this.activeautocompleteOptionGroup = jQuery(AUTOCOMPLETE.tmpl.get.call(this, "optionGroup", data, item.columnKeys));
-                    this.activeautocompleteOptionGroup.find('[data-els="content"]').html(jQuery(AUTOCOMPLETE.tmpl.get.call(this, "options", data, item.columnKeys)));
+                    this.activeautocompleteOptionGroup.find('[data-els="content"]').html(AUTOCOMPLETE.tmpl.get.call(this, "options", data, item.columnKeys));
                     this.activeautocompleteQueueIndex = queIdx;
 
                     alignAutocompleteOptionGroup.call(this, "append"); // alignAutocompleteOptionGroup 에서 body append
-                    jQuery(window).bind("resize.ax5autocomplete-" + this.instanceId, (function () {
+                    jQuery(window).on("resize.ax5autocomplete-" + this.instanceId, (function () {
                         alignAutocompleteOptionGroup.call(this);
                     }).bind(this));
 
@@ -1156,7 +1152,7 @@
                         }
                     }
 
-                    jQuery(window).bind("click.ax5autocomplete-" + this.instanceId, (function (e) {
+                    jQuery(window).on("click.ax5autocomplete-" + this.instanceId, (function (e) {
                         e = e || window.event;
                         onBodyClick.call(this, e);
                         U.stopEvent(e);
@@ -1269,9 +1265,9 @@
                 this.activeautocompleteOptionGroup.addClass("destroy");
 
                 jQuery(window)
-                    .unbind("resize.ax5autocomplete-" + this.instanceId)
-                    .unbind("click.ax5autocomplete-" + this.instanceId)
-                    .unbind("keyup.ax5autocomplete-" + this.instanceId);
+                    .off("resize.ax5autocomplete-" + this.instanceId)
+                    .off("click.ax5autocomplete-" + this.instanceId)
+                    .off("keyup.ax5autocomplete-" + this.instanceId);
 
                 this.closeTimer = setTimeout((function () {
                     if (this.activeautocompleteOptionGroup) this.activeautocompleteOptionGroup.remove();
@@ -1377,87 +1373,10 @@
                 }
             }).apply(this, arguments);
         };
-        return ax5autocomplete;
     })());
 
     AUTOCOMPLETE = ax5.ui.autocomplete;
 })();
-
-/**
- * autocomplete jquery extends
- * @namespace jQueryExtends
- */
-
-/**
- * @method jQueryExtends.ax5autocomplete
- * @param {String} methodName
- * @param [arguments]
- * @param [arguments]
- * @example
- * ```html
- * <div data-ax5autocomplete="ax1" data-ax5autocomplete-config='{
- *  multiple: true,
- *  editable: true,
- *  size: "",
- *  theme:""
- *  }'></div>
- * <script>
- * jQuery('[data-ax5autocomplete="ax1"]').ax5autocomplete();
- * $('[data-ax5autocomplete="ax1"]').ax5autocomplete("getSelectedOption");
- * $('[data-ax5autocomplete="ax1"]').ax5autocomplete("setValue", {value:"test", text:"test"});
- * $('[data-ax5autocomplete="ax1"]').ax5autocomplete("enable");
- * $('[data-ax5autocomplete="ax1"]').ax5autocomplete("disable");
- * </script>
- * ```
- */
-ax5.ui.autocomplete_instance = new ax5.ui.autocomplete();
-jQuery.fn.ax5autocomplete = (function () {
-    return function (config) {
-        if (ax5.util.isString(arguments[0])) {
-            var methodName = arguments[0];
-
-            switch (methodName) {
-                case "open":
-                    return ax5.ui.autocomplete_instance.open(this);
-                    break;
-                case "close":
-                    return ax5.ui.autocomplete_instance.close(this);
-                    break;
-                case "setValue":
-                    return ax5.ui.autocomplete_instance.setValue(this, arguments[1], arguments[2], arguments[3], arguments[4] || "justSetValue");
-                    break;
-                case "setText":
-                    return ax5.ui.autocomplete_instance.setText(this, arguments[1], arguments[2], arguments[3], arguments[4] || "justSetValue");
-                    break;
-                case "getSelectedOption":
-                    return ax5.ui.autocomplete_instance.getSelectedOption(this);
-                    break;
-                case "enable":
-                    return ax5.ui.autocomplete_instance.enable(this);
-                    break;
-                case "disable":
-                    return ax5.ui.autocomplete_instance.disable(this);
-                    break;
-                case "blur":
-                    return ax5.ui.autocomplete_instance.blur(this);
-                default:
-                    return this;
-            }
-        }
-        else {
-            if (typeof config == "undefined") config = {};
-            jQuery.each(this, function () {
-                var defaultConfig = {
-                    target: this
-                };
-                config = jQuery.extend({}, config, defaultConfig);
-                ax5.ui.autocomplete_instance.bind(config);
-            });
-        }
-        return this;
-    }
-})();
-
 
 // todo : editable 지원.
 // 아이템 박스 안에서 제거 할때 디스플레이 정렬

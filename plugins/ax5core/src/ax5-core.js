@@ -2,9 +2,9 @@
     'use strict';
 
     // root of function
-    var root = this, win = this;
-    var doc = (win) ? win.document : null, docElem = (win) ? win.document.documentElement : null;
-    var reIsJson = /^(["'](\\.|[^"\\\n\r])*?["']|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/,
+    let root = this, win = this,
+        doc = (win) ? win.document : null, docElem = (win) ? win.document.documentElement : null,
+        reIsJson = /^(["'](\\.|[^"\\\n\r])*?["']|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/,
         reMs = /^-ms-/,
         reSnakeCase = /[\-_]([\da-z])/gi,
         reCamelCase = /([A-Z])/g,
@@ -29,8 +29,8 @@
      * @method ax5.getGuid
      * @returns {Number} guid
      */
-    ax5.getGuid = function () {
-        return ax5.guid++;
+    ax5.getGuid = () => {
+        return ax5.guid++
     };
 
     /**
@@ -42,13 +42,13 @@
          * ax5 version
          * @member {String} ax5.info.version
          */
-        var version = "${VERSION}";
+        const version = "${VERSION}";
 
         /**
          * ax5 library path
          * @member {String} ax5.info.baseUrl
          */
-        var baseUrl = "";
+        const baseUrl = "";
 
         /**
          * ax5 에러 출력메세지 사용자 재 정의
@@ -60,7 +60,7 @@
 		 * }
          * ```
          */
-        var onerror = function () {
+        let onerror = () => {
             console.error(U.toArray(arguments).join(":"));
         };
 
@@ -76,7 +76,7 @@
 		 * }
          * ```
          */
-        var eventKeys = {
+        const eventKeys = {
             BACKSPACE: 8, TAB: 9,
             RETURN: 13, ESC: 27, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, DELETE: 46,
             HOME: 36, END: 35, PAGEUP: 33, PAGEDOWN: 34, INSERT: 45, SPACE: 32
@@ -96,7 +96,7 @@
          * console.log( ax5.info.weekNames[(new Date()).getDay()].label )
          * ```
          */
-        var weekNames = [
+        let weekNames = [
             {label: "SUN"},
             {label: "MON"},
             {label: "TUE"},
@@ -115,7 +115,7 @@
          * //Object {name: "chrome", version: "39.0.2171.71", mobile: false}
          * ```
          */
-        var browser = (function (ua, mobile, browserName, match, browser, browserVersion) {
+        let browser = (function (ua, mobile, browserName, match, browser, browserVersion) {
             if (!win || !win.navigator) return {};
 
             ua = navigator.userAgent.toLowerCase(), mobile = (ua.search(/mobile/g) != -1), browserName, match, browser, browserVersion;
@@ -151,13 +151,13 @@
          * 브라우저 여부
          * @member {Boolean} ax5.info.isBrowser
          */
-        var isBrowser = !!(typeof window !== 'undefined' && typeof navigator !== 'undefined' && win.document);
+        let isBrowser = !!(typeof window !== 'undefined' && typeof navigator !== 'undefined' && win.document);
 
         /**
          * 브라우저에 따른 마우스 휠 이벤트이름
          * @member {Object} ax5.info.wheelEnm
          */
-        var wheelEnm = (win && (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel");
+        let wheelEnm = (win && (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel");
 
         /**
          * 첫번째 자리수 동사 - (필요한것이 없을때 : 4, 실행오류 : 5)
@@ -165,7 +165,7 @@
          * 세번째 자리수 옵션
          * @member {Object} ax5.info.errorMsg
          */
-        var errorMsg = {};
+        let errorMsg = {};
 
         /**
          * 현재 페이지의 Url 정보를 리턴합니다.
@@ -248,7 +248,9 @@
          * ```
          * var chkFlag = ax5.info.supportTouch;
          */
-        var supportTouch = (win) ? (('ontouchstart' in win) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) : false;
+        let supportTouch = (win) ? (('ontouchstart' in win) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) : false;
+
+        let supportFileApi = (win) ? ( win.FileReader && win.File && win.FileList && win.Blob ) : false;
 
         return {
             errorMsg: errorMsg,
@@ -260,6 +262,7 @@
             browser: browser,
             isBrowser: isBrowser,
             supportTouch: supportTouch,
+            supportFileApi: supportFileApi,
             wheelEnm: wheelEnm,
             urlUtil: urlUtil,
             getError: getError
@@ -271,7 +274,7 @@
      * @namespace ax5.util
      */
     ax5['util'] = U = (function () {
-        var _toString = Object.prototype.toString;
+        const _toString = Object.prototype.toString;
 
         /**
          * Object나 Array의 아이템으로 사용자 함수를 호출합니다.
@@ -291,7 +294,7 @@
          */
         function each(O, _fn) {
             if (isNothing(O)) return [];
-            var key, i = 0, l = O.length,
+            let key, i = 0, l = O.length,
                 isObj = l === undefined || typeof O === "function";
             if (isObj) {
                 for (key in O) {
@@ -339,7 +342,7 @@
          */
         function map(O, _fn) {
             if (isNothing(O)) return [];
-            var key, i = 0, l = O.length, results = [], fnResult;
+            let key, i = 0, l = O.length, results = [], fnResult;
             if (isObject(O)) {
                 for (key in O) {
                     if (typeof O[key] != "undefined") {
@@ -396,9 +399,8 @@
          */
         function search(O, _fn) {
             if (isNothing(O)) return -1;
-            var key, i = 0, l = O.length;
             if (isObject(O)) {
-                for (key in O) {
+                for (let key in O) {
                     if (typeof O[key] != "undefined" && isFunction(_fn) && _fn.call(O[key], key, O[key])) {
                         return key;
                         break;
@@ -410,7 +412,7 @@
                 }
             }
             else {
-                for (; i < l;) {
+                for (let i = 0, l = O.length; i < l; i++) {
                     if (typeof O[i] != "undefined" && isFunction(_fn) && _fn.call(O[i], i, O[i])) {
                         return i;
                         break;
@@ -419,7 +421,6 @@
                         return i;
                         break;
                     }
-                    i++;
                 }
             }
             return -1;
@@ -453,7 +454,7 @@
          * ```
          */
         function sum(O, defaultValue, _fn) {
-            var i, l, tokenValue;
+            let i, l, tokenValue;
             if (isFunction(defaultValue) && typeof _fn === "undefined") {
                 _fn = defaultValue;
                 defaultValue = 0;
@@ -486,7 +487,6 @@
             }
         }
 
-
         /**
          * @method ax5.util.avg
          * @param {Array|Object} O
@@ -509,7 +509,7 @@
          * ```
          */
         function avg(O, defaultValue, _fn) {
-            var i, l, tokenValue;
+            let i, l, tokenValue;
             if (isFunction(defaultValue) && typeof _fn === "undefined") {
                 _fn = defaultValue;
                 defaultValue = 0;
@@ -528,10 +528,11 @@
                 return defaultValue / l;
             }
             else if (isObject(O)) {
+                l = 0;
                 for (i in O) {
                     if (typeof O[i] != "undefined") {
                         if (( tokenValue = _fn.call(O[i], O[i]) ) === false) break;
-                        else if (typeof tokenValue !== "undefined") defaultValue += tokenValue;
+                        else if (typeof tokenValue !== "undefined") defaultValue += tokenValue; ++l;
                     }
                 }
                 return defaultValue / l;
@@ -1196,8 +1197,12 @@
          * ```
          */
         function number(str, cond) {
-            var result, pair = ('' + str).split(reDot), isMinus = (Number(pair[0]) < 0 || pair[0] == "-0"), returnValue = 0.0;
+            var result, pair = ('' + str).split(reDot), isMinus, returnValue;
+
+            isMinus = (Number(pair[0].replace(/,/g, "")) < 0 || pair[0] == "-0");
+            returnValue = 0.0;
             pair[0] = pair[0].replace(reInt, "");
+
             if (pair[1]) {
                 pair[1] = pair[1].replace(reNotNum, "");
                 returnValue = Number(pair[0] + "." + pair[1]) || 0;
@@ -1376,8 +1381,9 @@
         function localDate(yy, mm, dd, hh, mi, ss) {
             var utcD, localD;
             localD = new Date();
-            if (typeof hh === "undefined") hh = 23;
-            if (typeof mi === "undefined") mi = 59;
+            if (mm < 0) mm = 0;
+            if (typeof hh === "undefined") hh = 12;
+            if (typeof mi === "undefined") mi = 0;
             utcD = new Date(Date.UTC(yy, mm, dd || 1, hh, mi, ss || 0));
 
             if (mm == 0 && dd == 1 && utcD.getUTCHours() + (utcD.getTimezoneOffset() / 60) < 0) {
@@ -1403,12 +1409,11 @@
          * ```
          */
         function date(d, cond) {
-            var yy, mm, dd, hh, mi,
+            let yy, mm, dd, hh, mi,
                 aDateTime, aTimes, aTime, aDate,
-                utcD, localD,
-                va;
-            var ISO_8601 = /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i;
-            var ISO_8601_FULL = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(([+-]\d\d:\d\d)|Z)?$/i;
+                va,
+                ISO_8601 = /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i,
+                ISO_8601_FULL = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(([+-]\d\d:\d\d)|Z)?$/i;
 
             if (isString(d)) {
                 if (d.length == 0) {
@@ -1451,16 +1456,13 @@
                     d = new Date();
                 }
             }
-
-            if (typeof cond === "undefined") {
+            if (typeof cond === "undefined" || typeof d === "undefined") {
                 return d;
             }
             else {
-
                 if ("add" in cond) {
                     d = (function (_d, opts) {
-                        var
-                            yy, mm, dd, mxdd,
+                        let yy, mm, dd, mxdd,
                             DyMilli = ((1000 * 60) * 60) * 24;
 
                         if (typeof opts["d"] !== "undefined") {
@@ -1479,14 +1481,16 @@
                         else if (typeof opts["y"] !== "undefined") {
                             _d.setTime(_d.getTime() + ((opts["y"] * 365) * DyMilli));
                         }
+                        else if (typeof opts["h"] !== "undefined") {
+                            _d.setTime(_d.getTime() + (opts["h"] * 1000 * 60 * 60));
+                        }
+
                         return _d;
                     })(new Date(d), cond["add"]);
                 }
-
                 if ("set" in cond) {
                     d = (function (_d, opts) {
-                        var
-                            yy, mm, dd,
+                        let yy, mm, dd,
                             processor = {
                                 "firstDayOfMonth": function (date) {
                                     yy = date.getFullYear();
@@ -1508,10 +1512,11 @@
                         }
                     })(new Date(d), cond["set"]);
                 }
-
                 if ("return" in cond) {
                     return (function () {
-                        var fStr = cond["return"], nY, nM, nD, nH, nMM, nS, nDW;
+
+                        let fStr = cond["return"], nY, nM, nD, nH, nMM, nS, nDW,
+                            yre, regY, mre, regM, dre, regD, hre, regH, mire, regMI, sre, regS, dwre, regDW;
 
                         nY = d.getUTCFullYear();
                         nM = setDigit(d.getMonth() + 1, 2);
@@ -1521,27 +1526,27 @@
                         nS = setDigit(d.getSeconds(), 2);
                         nDW = d.getDay();
 
-                        var yre = /[^y]*(yyyy)[^y]*/gi;
+                        yre = /[^y]*(yyyy)[^y]*/gi;
                         yre.exec(fStr);
-                        var regY = RegExp.$1;
-                        var mre = /[^m]*(MM)[^m]*/g;
+                        regY = RegExp.$1;
+                        mre = /[^m]*(MM)[^m]*/g;
                         mre.exec(fStr);
-                        var regM = RegExp.$1;
-                        var dre = /[^d]*(dd)[^d]*/gi;
+                        regM = RegExp.$1;
+                        dre = /[^d]*(dd)[^d]*/gi;
                         dre.exec(fStr);
-                        var regD = RegExp.$1;
-                        var hre = /[^h]*(hh)[^h]*/gi;
+                        regD = RegExp.$1;
+                        hre = /[^h]*(hh)[^h]*/gi;
                         hre.exec(fStr);
-                        var regH = RegExp.$1;
-                        var mire = /[^m]*(mm)[^i]*/g;
+                        regH = RegExp.$1;
+                        mire = /[^m]*(mm)[^i]*/g;
                         mire.exec(fStr);
-                        var regMI = RegExp.$1;
-                        var sre = /[^s]*(ss)[^s]*/gi;
+                        regMI = RegExp.$1;
+                        sre = /[^s]*(ss)[^s]*/gi;
                         sre.exec(fStr);
-                        var regS = RegExp.$1;
-                        var dwre = /[^d]*(dw)[^w]*/gi;
+                        regS = RegExp.$1;
+                        dwre = /[^d]*(dw)[^w]*/gi;
                         dwre.exec(fStr);
-                        var regDW = RegExp.$1;
+                        regDW = RegExp.$1;
 
                         if (regY === "yyyy") {
                             fStr = fStr.replace(regY, right(nY, regY.length));
@@ -1902,7 +1907,7 @@
          * ax5.util.selectRange($("#select-test-0"), [1, 5]); // select 1~5
          * ```
          */
-        var selectRange = (function () {
+        const selectRange = (function () {
             var processor = {
                 'textRange': {
                     'selectAll': function (el, range, offset) {
@@ -2001,7 +2006,7 @@
          * @method ax5.util.debounce
          * @param {Function} func
          * @param {Number} wait
-         * @param {Boolean} immediately
+         * @param {Object} options
          * @returns {debounced}
          * @example
          * ```js
@@ -2011,38 +2016,155 @@
          * });
          * ```
          */
-        var debounce = function (func, wait, immediately) {
-            var timeout, removeTimeout;
-            var debounced = function () {
-                var args = toArray(arguments);
+        // https://github.com/lodash/lodash/blob/master/debounce.js
+        function debounce(func, wait, options) {
+            let lastArgs,
+                lastThis,
+                maxWait,
+                result,
+                timerId,
+                lastCallTime;
 
-                if (removeTimeout) clearTimeout(removeTimeout);
-                if (timeout) {
-                    // 두번째 호출
-                    if (timeout) clearTimeout(timeout);
-                    timeout = setTimeout((function (args) {
-                        func.apply(this, args);
-                    }).bind(this, args), wait);
-                } else {
-                    // 첫 호출
-                    timeout = setTimeout((function (args) {
-                        func.apply(this, args);
-                    }).bind(this, args), (immediately) ? 0 : wait);
+            let lastInvokeTime = 0;
+            let leading = false;
+            let maxing = false;
+            let trailing = true;
+
+            if (typeof func != 'function') {
+                throw new TypeError('Expected a function')
+            }
+            wait = +wait || 0;
+            if (isObject(options)) {
+                leading = !!options.leading;
+                maxing = 'maxWait' in options;
+                maxWait = maxing ? Math.max(+options.maxWait || 0, wait) : maxWait;
+                trailing = 'trailing' in options ? !!options.trailing : trailing;
+            }
+
+            function invokeFunc(time) {
+                const args = lastArgs;
+                const thisArg = lastThis;
+
+                lastArgs = lastThis = undefined;
+                lastInvokeTime = time;
+                result = func.apply(thisArg, args);
+                return result
+            }
+
+            function leadingEdge(time) {
+                // Reset any `maxWait` timer.
+                lastInvokeTime = time;
+                // Start the timer for the trailing edge.
+                timerId = setTimeout(timerExpired, wait);
+                // Invoke the leading edge.
+                return leading ? invokeFunc(time) : result;
+            }
+
+            function remainingWait(time) {
+                const timeSinceLastCall = time - lastCallTime;
+                const timeSinceLastInvoke = time - lastInvokeTime;
+                const result = wait - timeSinceLastCall;
+
+                return maxing ? Math.min(result, maxWait - timeSinceLastInvoke) : result;
+            }
+
+            function shouldInvoke(time) {
+                const timeSinceLastCall = time - lastCallTime;
+                const timeSinceLastInvoke = time - lastInvokeTime;
+
+                // Either this is the first call, activity has stopped and we're at the
+                // trailing edge, the system time has gone backwards and we're treating
+                // it as the trailing edge, or we've hit the `maxWait` limit.
+                return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+                    (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait))
+            }
+
+            function timerExpired() {
+                const time = Date.now();
+                if (shouldInvoke(time)) {
+                    return trailingEdge(time);
                 }
-                removeTimeout = setTimeout(function () {
-                    clearTimeout(timeout);
-                    timeout = null;
-                }, wait);
-            };
-            debounced.cancel = function () {
-                clearTimeout(timeout);
-                clearTimeout(removeTimeout);
-                timeout = null;
-            };
+                // Restart the timer.
+                timerId = setTimeout(timerExpired, remainingWait(time));
+            }
 
-            return debounced;
-        };
+            function trailingEdge(time) {
+                timerId = undefined;
 
+                // Only invoke if we have `lastArgs` which means `func` has been
+                // debounced at least once.
+                if (trailing && lastArgs) {
+                    return invokeFunc(time)
+                }
+                lastArgs = lastThis = undefined;
+                return result
+            }
+
+            function cancel() {
+                if (timerId !== undefined) {
+                    clearTimeout(timerId);
+                }
+                lastInvokeTime = 0;
+                lastArgs = lastCallTime = lastThis = timerId = undefined
+            }
+
+            function flush() {
+                return timerId === undefined ? result : trailingEdge(Date.now())
+            }
+
+            function debounced(...args) {
+                const time = Date.now();
+                const isInvoking = shouldInvoke(time);
+
+                lastArgs = args;
+                lastThis = this;
+                lastCallTime = time;
+
+                if (isInvoking) {
+                    if (timerId === undefined) {
+                        return leadingEdge(lastCallTime)
+                    }
+                    if (maxing) {
+                        // Handle invocations in a tight loop.
+                        timerId = setTimeout(timerExpired, wait);
+                        return invokeFunc(lastCallTime)
+                    }
+                }
+                if (timerId === undefined) {
+                    timerId = setTimeout(timerExpired, wait)
+                }
+                return result
+            }
+            debounced.cancel = cancel;
+            debounced.flush = flush;
+            return debounced
+        }
+
+        /**
+         * @method ax5.util.throttle
+         * @param func
+         * @param wait
+         * @param options
+         * @return {debounced}
+         */
+        //https://github.com/lodash/lodash/blob/master/throttle.js
+        function throttle(func, wait, options) {
+            let leading = true;
+            let trailing = true;
+
+            if (typeof func != 'function') {
+                throw new TypeError('Expected a function');
+            }
+            if (isObject(options)) {
+                leading = 'leading' in options ? !!options.leading : leading;
+                trailing = 'trailing' in options ? !!options.trailing : trailing;
+            }
+            return debounce(func, wait, {
+                'leading': leading,
+                'maxWait': wait,
+                'trailing': trailing
+            });
+        }
 
         /**
          * @method ax5.util.deepCopy
@@ -2153,7 +2275,7 @@
          * ```
          */
         function string(_string) {
-            function ax5string(_string) {
+            return new (function (_string) {
                 this.value = _string;
                 this.toString = function () {
                     return this.value;
@@ -2164,7 +2286,7 @@
                  */
                 this.format = function () {
                     var args = [];
-                    for(var i=0,l=arguments.length;i<l;i++){
+                    for (var i = 0, l = arguments.length; i < l; i++) {
                         args = args.concat(arguments[i]);
                     }
                     return this.value.replace(/{(\d+)}/g, function (match, number) {
@@ -2175,28 +2297,28 @@
                  * @method ax5.util.string.escape
                  * @returns {*}
                  */
-                this.escape = function(){
+                this.escape = function () {
                     return escapeHtml(this.value);
                 };
                 /**
                  * @method ax5.util.string.unescape
                  * @returns {*}
                  */
-                this.unescape = function(){
+                this.unescape = function () {
                     return unescapeHtml(this.value);
                 };
                 /**
                  * @method ax5.util.string.encode
                  * @returns {*}
                  */
-                this.encode = function(){
+                this.encode = function () {
                     return encode(this.value);
                 };
                 /**
                  * @method ax5.util.string.decode
                  * @returns {*}
                  */
-                this.decode = function(){
+                this.decode = function () {
                     return decode(this.value);
                 };
                 /**
@@ -2204,7 +2326,7 @@
                  * @param {String|Number} pos - 찾을 문자열 또는 포지션
                  * @returns {*}
                  */
-                this.left = function(_pos){
+                this.left = function (_pos) {
                     return left(this.value, _pos);
                 };
                 /**
@@ -2212,25 +2334,300 @@
                  * @param {String|Number} pos - 찾을 문자열 또는 포지션
                  * @returns {*}
                  */
-                this.right = function(_pos){
+                this.right = function (_pos) {
                     return right(this.value, _pos);
                 };
                 /**
                  * @method ax5.util.string.camelCase
                  * @returns {*}
                  */
-                this.camelCase = function(){
+                this.camelCase = function () {
                     return camelCase(this.value);
                 };
                 /**
                  * @method ax5.util.string.snakeCase
                  * @returns {*}
                  */
-                this.snakeCase = function(){
+                this.snakeCase = function () {
                     return snakeCase(this.value);
                 };
+            })(_string);
+        }
+
+        /**
+         * @method ax5.util.color
+         * @param _hexColor
+         * @return {ax5color}
+         * @example
+         * ```js
+         * ax5.util.color("#ff3300").lighten(10).getHexValue()
+         * console.log(ax5.util.color("#ff3300").darken(10).getHexValue());
+         * ```
+         */
+        function color(_hexColor) {
+
+            const matchers = (function () {
+
+                // <http://www.w3.org/TR/css3-values/#integers>
+                const CSS_INTEGER = "[-\\+]?\\d+%?";
+
+                // <http://www.w3.org/TR/css3-values/#number-value>
+                const CSS_NUMBER = "[-\\+]?\\d*\\.\\d+%?";
+
+                // Allow positive/negative integer/number.  Don't capture the either/or, just the entire outcome.
+                const CSS_UNIT = "(?:" + CSS_NUMBER + ")|(?:" + CSS_INTEGER + ")";
+
+                // Actual matching.
+                // Parentheses and commas are optional, but not required.
+                // Whitespace can take the place of commas or opening paren
+                const PERMISSIVE_MATCH3 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
+                const PERMISSIVE_MATCH4 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
+
+                return {
+                    CSS_UNIT: new RegExp(CSS_UNIT),
+                    rgb: new RegExp("rgb" + PERMISSIVE_MATCH3),
+                    rgba: new RegExp("rgba" + PERMISSIVE_MATCH4),
+                    hsl: new RegExp("hsl" + PERMISSIVE_MATCH3),
+                    hsla: new RegExp("hsla" + PERMISSIVE_MATCH4),
+                    hsv: new RegExp("hsv" + PERMISSIVE_MATCH3),
+                    hsva: new RegExp("hsva" + PERMISSIVE_MATCH4),
+                    hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+                    hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
+                    hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+                    hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
+                };
+            })();
+
+            const convertObject = function (_color) {
+                let match;
+                if ((match = matchers.rgb.exec(_color))) {
+                    return {r: match[1], g: match[2], b: match[3]};
+                }
+                if ((match = matchers.rgba.exec(_color))) {
+                    return {r: match[1], g: match[2], b: match[3], a: match[4]};
+                }
+                if ((match = matchers.hsl.exec(_color))) {
+                    return {h: match[1], s: match[2], l: match[3]};
+                }
+                if ((match = matchers.hsla.exec(_color))) {
+                    return {h: match[1], s: match[2], l: match[3], a: match[4]};
+                }
+                if ((match = matchers.hsv.exec(_color))) {
+                    return {h: match[1], s: match[2], v: match[3]};
+                }
+                if ((match = matchers.hsva.exec(_color))) {
+                    return {h: match[1], s: match[2], v: match[3], a: match[4]};
+                }
+                if ((match = matchers.hex8.exec(_color))) {
+                    return {
+                        r: parseInt(match[1], 16),
+                        g: parseInt(match[2], 16),
+                        b: parseInt(match[3], 16),
+                        a: parseInt((match[4]) / 255, 16),
+                        format: "hex8"
+                    };
+                }
+                if ((match = matchers.hex6.exec(_color))) {
+                    return {
+                        r: parseInt(match[1], 16),
+                        g: parseInt(match[2], 16),
+                        b: parseInt(match[3], 16),
+                        format: "hex"
+                    };
+                }
+                if ((match = matchers.hex4.exec(_color))) {
+                    return {
+                        r: parseInt(match[1] + '' + match[1], 16),
+                        g: parseInt(match[2] + '' + match[2], 16),
+                        b: parseInt(match[3] + '' + match[3], 16),
+                        a: parseInt(match[4] + '' + match[4], 16),
+                        format: "hex8"
+                    };
+                }
+                if ((match = matchers.hex3.exec(_color))) {
+                    return {
+                        r: parseInt(match[1] + '' + match[1], 16),
+                        g: parseInt(match[2] + '' + match[2], 16),
+                        b: parseInt(match[3] + '' + match[3], 16),
+                        format: "hex"
+                    };
+                }
+
+                return false;
+            };
+
+            function isOnePointZero(n) {
+                return typeof n == "string" && n.indexOf('.') != -1 && parseFloat(n) === 1;
             }
-            return new ax5string(_string);
+
+            function isPercentage(n) {
+                return typeof n === "string" && n.indexOf('%') != -1;
+            }
+
+            function convertToPercentage(n) {
+                if (n <= 1) {
+                    n = (n * 100) + "%";
+                }
+
+                return n;
+            }
+
+            function convertTo255(n) {
+                return ax5.util.number(Math.min(255, Math.max(n, 0)), {'round': 2});
+            }
+
+            function convertToHex(n) {
+                return setDigit(Math.round(n).toString(16), 2)
+            }
+
+            function bound01(n, max) {
+                if (isOnePointZero(n)) {
+                    n = "100%";
+                }
+
+                var processPercent = isPercentage(n);
+                n = Math.min(max, Math.max(0, parseFloat(n)));
+
+                // Automatically convert percentage into number
+                if (processPercent) {
+                    n = parseInt(n * max, 10) / 100;
+                }
+
+                // Handle floating point rounding errors
+                if ((Math.abs(n - max) < 0.000001)) {
+                    return 1;
+                }
+
+                // Convert into [0, 1] range if it isn't already
+                return (n % max) / parseFloat(max);
+            }
+
+            function rgbToHsl(r, g, b) {
+                r = bound01(r, 255);
+                g = bound01(g, 255);
+                b = bound01(b, 255);
+
+                var max = Math.max(r, g, b), min = Math.min(r, g, b);
+                var h, s, l = (max + min) / 2;
+
+                if (max == min) {
+                    h = s = 0; // achromatic
+                }
+                else {
+                    var d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r:
+                            h = (g - b) / d + (g < b ? 6 : 0);
+                            break;
+                        case g:
+                            h = (b - r) / d + 2;
+                            break;
+                        case b:
+                            h = (r - g) / d + 4;
+                            break;
+                    }
+
+                    h /= 6;
+                }
+
+                return {h: h, s: s, l: l};
+            }
+
+            function hslToRgb(h, s, l) {
+                let r, g, b;
+
+                h = bound01(h, 360);
+                s = bound01(s, 100);
+                l = bound01(l, 100);
+
+                function hue2rgb(p, q, t) {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                }
+
+                if (s === 0) {
+                    r = g = b = l; // achromatic
+                }
+                else {
+                    let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    let p = 2 * l - q;
+                    r = hue2rgb(p, q, h + 1 / 3);
+                    g = hue2rgb(p, q, h);
+                    b = hue2rgb(p, q, h - 1 / 3);
+                }
+
+                return {r: r * 255, g: g * 255, b: b * 255};
+            }
+
+            return new (function (_color) {
+                this._originalValue = _color;
+                _color = convertObject(_color);
+                this.r = _color.r;
+                this.g = _color.g;
+                this.b = _color.b;
+                this.a = _color.a || 1;
+                this._format = _color.format;
+                this._hex = convertToHex(this.r) + convertToHex(this.g) + convertToHex(this.b);
+
+                this.getHexValue = function () {
+                    return this._hex;
+                };
+
+                this.lighten = function (amount) {
+                    amount = (amount === 0) ? 0 : (amount || 10);
+                    let hsl = rgbToHsl(this.r, this.g, this.b), rgb = {};
+
+                    hsl.l += amount / 100;
+                    hsl.l = Math.min(1, Math.max(0, hsl.l));
+                    hsl.h = hsl.h * 360;
+
+                    rgb = hslToRgb(hsl.h, convertToPercentage(hsl.s), convertToPercentage(hsl.l));
+
+                    return color('rgba(' + convertTo255(rgb.r) + ', ' + convertTo255(rgb.g)+ ', ' + convertTo255(rgb.b) + ', ' + this.a + ')');
+                };
+
+                this.darken = function (amount) {
+                    amount = (amount === 0) ? 0 : (amount || 10);
+                    let hsl = rgbToHsl(this.r, this.g, this.b), rgb = {};
+
+                    hsl.l -= amount / 100;
+                    hsl.l = Math.min(1, Math.max(0, hsl.l));
+                    hsl.h = hsl.h * 360;
+
+                    rgb = hslToRgb(hsl.h, convertToPercentage(hsl.s), convertToPercentage(hsl.l));
+
+                    return color('rgba(' + convertTo255(rgb.r) + ', ' + convertTo255(rgb.g)+ ', ' + convertTo255(rgb.b) + ', ' + this.a + ')');
+                };
+
+                this.getBrightness = function () {
+                    return (this.r * 299 + this.g * 587 + this.b * 114) / 1000;
+                };
+
+                this.isDark = function() {
+                    return this.getBrightness() < 128;
+                };
+
+                this.isLight = function() {
+                    return !this.isDark();
+                };
+
+                this.getHsl = function () {
+                    let hsl = rgbToHsl(this.r, this.g, this.b);
+                    hsl.l = Math.min(1, Math.max(0, hsl.l));
+                    hsl.h = hsl.h * 360;
+                    return {
+                        h: hsl.h,
+                        s: hsl.s,
+                        l: hsl.l
+                    }
+                };
+
+            })(_hexColor);
         }
 
         return {
@@ -2285,10 +2682,12 @@
             stopEvent: stopEvent,
             selectRange: selectRange,
             debounce: debounce,
+            throttle: throttle,
             escapeHtml: escapeHtml,
             unescapeHtml: unescapeHtml,
 
-            string: string
+            string: string,
+            color: color
         }
     })();
 

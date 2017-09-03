@@ -4,11 +4,10 @@
 (function () {
     var UI = ax5.ui;
     var U = ax5.util;
-    var FORMATTER;
+    var FORMATTER = void 0;
 
     UI.addClass({
-        className: "formatter",
-        version: "1.3.44"
+        className: "formatter"
     }, function () {
         var TODAY = new Date();
         var setSelectionRange = function setSelectionRange(input, pos) {
@@ -60,7 +59,7 @@
          * });
          * ```
          */
-        var ax5formatter = function ax5formatter() {
+        return function () {
             var self = this,
                 cfg;
 
@@ -143,8 +142,9 @@
                         }
                     }
                 }
-            },
-                bindFormatterTarget = function bindFormatterTarget(opts, optIdx) {
+            };
+
+            var bindFormatterTarget = function bindFormatterTarget(opts, optIdx) {
 
                 if (!opts.pattern) {
                     if (opts.$target.get(0).tagName == "INPUT") {
@@ -181,8 +181,9 @@
                 formatterEvent.blur.call(this, this.queue[optIdx], optIdx);
 
                 return this;
-            },
-                getQueIdx = function getQueIdx(boundID) {
+            };
+
+            var getQueIdx = function getQueIdx(boundID) {
                 if (!U.isString(boundID)) {
                     boundID = jQuery(boundID).data("data-formatter");
                 }
@@ -210,7 +211,7 @@
 
             this.bind = function (opts) {
                 var formatterConfig = {},
-                    optIdx;
+                    optIdx = void 0;
 
                 jQuery.extend(true, formatterConfig, cfg);
                 if (opts) jQuery.extend(true, formatterConfig, opts);
@@ -291,50 +292,17 @@
                 }
             }.apply(this, arguments);
         };
-        return ax5formatter;
     }());
 
     FORMATTER = ax5.ui.formatter;
 })();
-
-ax5.ui.formatter_instance = new ax5.ui.formatter();
-
-jQuery.fn.ax5formatter = function () {
-    return function (config) {
-        if (ax5.util.isString(arguments[0])) {
-            var methodName = arguments[0];
-
-            switch (methodName) {
-                case "formatting":
-                    return ax5.ui.formatter_instance.formatting(this);
-                    break;
-
-                case "unbind":
-                    return ax5.ui.formatter_instance.unbind(this);
-                    break;
-
-                default:
-                    return this;
-            }
-        } else {
-            if (typeof config == "undefined") config = {};
-            jQuery.each(this, function () {
-                var defaultConfig = {
-                    target: this
-                };
-                config = jQuery.extend({}, config, defaultConfig);
-                ax5.ui.formatter_instance.bind(config);
-            });
-        }
-        return this;
-    };
-}();
-
 // ax5.ui.formatter.formatter
 (function () {
 
     var FORMATTER = ax5.ui.formatter;
     var U = ax5.util;
+    var TODAY = new Date();
+
     var ctrlKeys = {
         "18": "KEY_ALT",
         "8": "KEY_BACKSPACE",
@@ -411,7 +379,9 @@ jQuery.fn.ax5formatter = function () {
     var pattern_number = {
         getEnterableKeyCodes: function getEnterableKeyCodes(_opts) {
             var enterableKeyCodes = {
-                '190': '.'
+                '190': '.',
+                '110': '.'
+
             };
             return jQuery.extend(enterableKeyCodes, FORMATTER.formatter.ctrlKeys, FORMATTER.formatter.numKeys);
         },
@@ -419,6 +389,8 @@ jQuery.fn.ax5formatter = function () {
             val = val.replace(/[^0-9^\.^\-]/g, "");
             var arrNumber = val.split('.'),
                 returnValue;
+
+            arrNumber[0] += ".";
 
             if (arrNumber.length > 1) {
                 if (U.isNumber(_opts.maxRound)) {
@@ -448,6 +420,10 @@ jQuery.fn.ax5formatter = function () {
 
             if (_opts.patternArgument == "time") {
                 regExpPattern = /^([0-9]{4})\-?([0-9]{1,2})?\-?([0-9]{1,2})? ?([0-9]{1,2})?:?([0-9]{1,2})?:?([0-9]{1,2})?.*$/;
+            } else if (_opts.patternArgument == "year") {
+                regExpPattern = /^([0-9]{0,4})?.*$/;
+            } else if (_opts.patternArgument == "month") {
+                regExpPattern = /^([0-9]{4})\-?([0-9]{1,2})?.*$/;
             }
 
             var matchedPattern = val.match(regExpPattern),
@@ -485,26 +461,48 @@ jQuery.fn.ax5formatter = function () {
             };
 
             returnValue = val.replace(regExpPattern, function (a, b) {
-                var nval = [inspectValue(arguments[1], "Y", eType)];
-                if (arguments[2] || eType) nval.push('-' + inspectValue(arguments[2], "M", eType));
-                if (arguments[3] || eType) nval.push('-' + inspectValue(arguments[3], "D", eType, arguments));
-                if (_opts.patternArgument == "time") {
+                var nval = [];
+
+                if (_opts.patternArgument == "year") {
+                    nval.push(inspectValue(arguments[1], "Y", eType));
+                } else if (_opts.patternArgument == "month") {
+                    nval.push(inspectValue(arguments[1], "Y", eType));
+                    if (arguments[2] || eType) nval.push('-' + inspectValue(arguments[2], "M", eType));
+                } else if (_opts.patternArgument == "time") {
+                    nval.push(inspectValue(arguments[1], "Y", eType));
+                    if (arguments[2] || eType) nval.push('-' + inspectValue(arguments[2], "M", eType));
+                    if (arguments[3] || eType) nval.push('-' + inspectValue(arguments[3], "D", eType, arguments));
                     if (arguments[4] || eType) nval.push(' ' + inspectValue(arguments[4], "h", eType));
                     if (arguments[5] || eType) nval.push(':' + inspectValue(arguments[5], "m", eType));
                     if (arguments[6] || eType) nval.push(':' + inspectValue(arguments[6], "s", eType));
+                } else {
+                    nval.push(inspectValue(arguments[1], "Y", eType));
+                    if (arguments[2] || eType) nval.push('-' + inspectValue(arguments[2], "M", eType));
+                    if (arguments[3] || eType) nval.push('-' + inspectValue(arguments[3], "D", eType, arguments));
                 }
                 return nval.join('');
             });
 
             if (eType == 'blur' && !matchedPattern) {
                 returnValue = function () {
-                    var nval = [inspectValue(returnValue, "Y", eType)];
-                    nval.push('-' + inspectValue(0, "M", eType));
-                    nval.push('-' + inspectValue(0, "D", eType, arguments));
-                    if (_opts.patternArgument == "time") {
+                    var nval = [];
+
+                    if (_opts.patternArgument == "year") {
+                        nval.push(inspectValue(0, "Y", eType));
+                    } else if (_opts.patternArgument == "month") {
+                        nval.push(inspectValue(0, "Y", eType));
+                        nval.push('-' + inspectValue(0, "M", eType));
+                    } else if (_opts.patternArgument == "time") {
+                        nval.push(inspectValue(0, "Y", eType));
+                        nval.push('-' + inspectValue(0, "M", eType));
+                        nval.push('-' + inspectValue(0, "D", eType, arguments));
                         nval.push(' ' + inspectValue(0, "h", eType));
                         nval.push(':' + inspectValue(0, "m", eType));
                         nval.push(':' + inspectValue(0, "s", eType));
+                    } else {
+                        nval.push(inspectValue(0, "Y", eType));
+                        nval.push('-' + inspectValue(0, "M", eType));
+                        nval.push('-' + inspectValue(0, "D", eType, arguments));
                     }
                     return nval.join('');
                 }();
@@ -636,3 +634,42 @@ jQuery.fn.ax5formatter = function () {
         custom: pattern_custom
     };
 })();
+
+/*
+ * Copyright (c) 2017. tom@axisj.com
+ * - github.com/thomasjang
+ * - www.axisj.com
+ */
+
+ax5.ui.formatter_instance = new ax5.ui.formatter();
+
+jQuery.fn.ax5formatter = function () {
+    return function (config) {
+        if (ax5.util.isString(arguments[0])) {
+            var methodName = arguments[0];
+
+            switch (methodName) {
+                case "formatting":
+                    return ax5.ui.formatter_instance.formatting(this);
+                    break;
+
+                case "unbind":
+                    return ax5.ui.formatter_instance.unbind(this);
+                    break;
+
+                default:
+                    return this;
+            }
+        } else {
+            if (typeof config == "undefined") config = {};
+            jQuery.each(this, function () {
+                var defaultConfig = {
+                    target: this
+                };
+                config = jQuery.extend({}, config, defaultConfig);
+                ax5.ui.formatter_instance.bind(config);
+            });
+        }
+        return this;
+    };
+}();

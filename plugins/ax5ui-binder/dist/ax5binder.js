@@ -7,8 +7,7 @@
     var U = ax5.util;
 
     UI.addClass({
-        className: "binder",
-        version: "1.3.44"
+        className: "binder"
     }, function () {
 
         /**
@@ -54,7 +53,7 @@
          * myBinder.setModel(obj, $('#form-target'));
          * ```
          */
-        var ax5binder = function ax5binder() {
+        return function () {
 
             var self = this,
                 cfg;
@@ -513,7 +512,7 @@
                 }
 
                 // binding event to els
-                this.view_target.find('[data-ax-path]').unbind("change.axbinder").bind("change.axbinder", function (e) {
+                this.view_target.find('[data-ax-path]').off("change.axbinder").on("change.axbinder", function (e) {
 
                     var i,
                         hasItem = false,
@@ -724,7 +723,7 @@
                     index = target.attr("data-ax-repeat-i");
                 var list = Function("", "return this" + get_real_path(dataPath) + ";").call(this.model);
 
-                target.find('[data-ax-repeat-click]').unbind("click.axbinder").bind("click.axbinder", function (e) {
+                target.find('[data-ax-repeat-click]').off("click.axbinder").on("click.axbinder", function (e) {
                     var target = ax5.util.findParentNode(e.target, function (el) {
                         return el.getAttribute("data-ax-repeat-click");
                     });
@@ -732,7 +731,6 @@
                         var dom = $(target),
                             value = dom.attr("data-ax-repeat-click"),
                             repeat_path = dom.attr("data-ax-repeat-path");
-
                         var that = {
                             el: target,
                             jquery: dom,
@@ -768,7 +766,7 @@
                 });
 
                 // binding event to els
-                target.find('[data-ax-item-path]').unbind("change.axbinder").bind("change.axbinder", function (e) {
+                target.find('[data-ax-item-path]').off("change.axbinder").on("change.axbinder", function (e) {
                     var i,
                         hasItem = false,
                         checked,
@@ -829,7 +827,8 @@
 
                     dom.data("changedTime", new Date().getTime());
                 });
-                target.find('[data-ax-item-path]').unbind("blur.axbinder").bind("blur.axbinder", function (e) {
+
+                target.find('[data-ax-item-path]').off("blur.axbinder").on("blur.axbinder", function (e) {
                     var dom = $(e.target);
                     if (typeof dom.data("changedTime") == "undefined" || dom.data("changedTime") < new Date().getTime() - 10) dom.trigger("change");
                 });
@@ -870,15 +869,23 @@
                 this.view_target.find('[data-ax-path]').each(function () {
                     var dom = $(this),
                         dataPath = dom.attr("data-ax-path"),
-                        is_validate = dom.attr("data-ax-validate");
-                    if (is_validate) {
-                        var val = Function("", "return this" + get_real_path(dataPath) + ";").call(_this.model);
-                        if (typeof val === "undefined") val = "";
-                        var _val = val.toString();
+                        is_validate = dom.attr("data-ax-validate"),
+                        pattern = dom.attr("pattern");
 
-                        var is_error = false;
+                    if (is_validate) {
+                        var val, _val, is_error;
+
+                        val = Function("", "return this" + get_real_path(dataPath) + ";").call(_this.model);
+                        if (typeof val === "undefined" || val === null) val = "";
+                        _val = val.toString();
+                        is_error = false;
+
                         if (is_validate == "required" && _val.trim() == "") {
                             is_error = true;
+                        } else if (is_validate == "pattern") {
+                            is_error = !new RegExp(pattern).test(_val);
+                        } else if (is_validate == "email") {
+                            is_error = !/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(_val);
                         } else if (!/\D.?/g.test(is_validate) && _val.trim().length < is_validate.number()) {
                             is_error = true;
                         }
@@ -912,6 +919,10 @@
                             var is_error = false;
                             if (is_validate == "required" && _val.trim() == "") {
                                 is_error = true;
+                            } else if (is_validate == "pattern") {
+                                is_error = !new RegExp(pattern).test(_val);
+                            } else if (is_validate == "email") {
+                                is_error = !/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(_val);
                             } else if (!/\D.?/g.test(is_validate) && _val.trim().length < is_validate.number()) {
                                 is_error = true;
                             }
@@ -945,6 +956,5 @@
                 }
             }.apply(this, arguments);
         };
-        return ax5binder;
     }());
 })();

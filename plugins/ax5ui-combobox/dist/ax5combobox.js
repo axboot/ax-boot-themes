@@ -1,15 +1,14 @@
-"use strict";
+'use strict';
 
 // ax5.ui.combobox
 (function () {
 
     var UI = ax5.ui;
     var U = ax5.util;
-    var COMBOBOX;
+    var COMBOBOX = void 0;
 
     UI.addClass({
-        className: "combobox",
-        version: "${VERSION}"
+        className: "combobox"
     }, function () {
         /**
          * @class ax5combobox
@@ -34,7 +33,7 @@
          * });
          * ```
          */
-        var ax5combobox = function ax5combobox() {
+        return function () {
             var self = this,
                 cfg;
 
@@ -801,7 +800,7 @@
             this.init = function () {
                 this.onStateChanged = cfg.onStateChanged;
                 this.onChange = cfg.onChange;
-                jQuery(window).bind("resize.ax5combobox-display-" + this.instanceId, function () {
+                jQuery(window).on("resize.ax5combobox-display-" + this.instanceId, function () {
                     alignComboboxDisplay.call(this);
                 }.bind(this));
             };
@@ -1006,16 +1005,16 @@
 
                         alignComboboxDisplay.call(this);
 
-                        item.$display.unbind('click.ax5combobox').bind('click.ax5combobox', comboboxEvent.click.bind(this, queIdx));
+                        item.$display.off('click.ax5combobox').on('click.ax5combobox', comboboxEvent.click.bind(this, queIdx));
 
                         // combobox 태그에 대한 이벤트 감시
 
 
-                        item.$displayLabelInput.unbind("focus.ax5combobox").bind("focus.ax5combobox", comboboxEvent.focus.bind(this, queIdx)).unbind("blur.ax5combobox").bind("blur.ax5combobox", comboboxEvent.blur.bind(this, queIdx)).unbind('keyup.ax5combobox').bind('keyup.ax5combobox', comboboxEvent.keyUp.bind(this, queIdx)).unbind("keydown.ax5combobox").bind("keydown.ax5combobox", comboboxEvent.keyDown.bind(this, queIdx));
+                        item.$displayLabelInput.off("focus.ax5combobox").on("focus.ax5combobox", comboboxEvent.focus.bind(this, queIdx)).off("blur.ax5combobox").on("blur.ax5combobox", comboboxEvent.blur.bind(this, queIdx)).off('keyup.ax5combobox').on('keyup.ax5combobox', comboboxEvent.keyUp.bind(this, queIdx)).off("keydown.ax5combobox").on("keydown.ax5combobox", comboboxEvent.keyDown.bind(this, queIdx));
 
                         // select 태그에 대한 change 이벤트 감시
 
-                        item.$select.unbind('change.ax5combobox').bind('change.ax5combobox', comboboxEvent.selectChange.bind(this, queIdx));
+                        item.$select.off('change.ax5combobox').on('change.ax5combobox', comboboxEvent.selectChange.bind(this, queIdx));
 
                         data = null;
                         item = null;
@@ -1180,7 +1179,7 @@
                     this.activecomboboxQueueIndex = queIdx;
 
                     alignComboboxOptionGroup.call(this, "append"); // alignComboboxOptionGroup 에서 body append
-                    jQuery(window).bind("resize.ax5combobox-" + this.instanceId, function () {
+                    jQuery(window).on("resize.ax5combobox-" + this.instanceId, function () {
                         alignComboboxOptionGroup.call(this);
                     }.bind(this));
 
@@ -1192,7 +1191,7 @@
                         }
                     }
 
-                    jQuery(window).bind("click.ax5combobox-" + this.instanceId, function (e) {
+                    jQuery(window).on("click.ax5combobox-" + this.instanceId, function (e) {
                         e = e || window.event;
                         onBodyClick.call(this, e);
                         U.stopEvent(e);
@@ -1320,7 +1319,7 @@
 
                 this.activecomboboxOptionGroup.addClass("destroy");
 
-                jQuery(window).unbind("resize.ax5combobox-" + this.instanceId).unbind("click.ax5combobox-" + this.instanceId).unbind("keyup.ax5combobox-" + this.instanceId);
+                jQuery(window).off("resize.ax5combobox-" + this.instanceId).off("click.ax5combobox-" + this.instanceId).off("keyup.ax5combobox-" + this.instanceId);
 
                 this.closeTimer = setTimeout(function () {
                     if (this.activecomboboxOptionGroup) this.activecomboboxOptionGroup.remove();
@@ -1413,6 +1412,27 @@
                 return this;
             };
 
+            /**
+             * @method ax5combobox.clear
+             * @param {(jQueryObject|Element|Number)} _boundID
+             * @returns {ax5combobox}
+             */
+            this.clear = function (_boundID) {
+                var queIdx = U.isNumber(_boundID) ? _boundID : getQueIdx.call(this, _boundID);
+                if (queIdx === -1) {
+                    console.log(ax5.info.getError("ax5combobox", "402", "clear"));
+                    return;
+                }
+
+                clearSelected.call(this, queIdx);
+                setOptionSelect.call(this, queIdx, [], false, { noStateChange: false });
+                printLabel.call(this, queIdx);
+                blurLabel.call(this, queIdx);
+                alignComboboxDisplay.call(this);
+
+                return this;
+            };
+
             // 클래스 생성자
             this.main = function () {
                 if (arguments && U.isObject(arguments[0])) {
@@ -1422,86 +1442,10 @@
                 }
             }.apply(this, arguments);
         };
-        return ax5combobox;
     }());
 
     COMBOBOX = ax5.ui.combobox;
 })();
-
-/**
- * ax5combobox jquery extends
- * @namespace jQueryExtends
- */
-
-/**
- * @method jQueryExtends.ax5combobox
- * @param {String} methodName
- * @param [arguments]
- * @param [arguments]
- * @example
- * ```html
- * <div data-ax5combobox="ax1" data-ax5combobox-config='{
- *  multiple: true,
- *  editable: true,
- *  size: "",
- *  theme:""
- *  }'></div>
- * <script>
- * jQuery('[data-ax5combobox="ax1"]').ax5combobox();
- * $('[data-ax5combobox="ax1"]').ax5combobox("getSelectedOption");
- * $('[data-ax5combobox="ax1"]').ax5combobox("setValue", ["string", "number"]);
- * $('[data-ax5combobox="ax1"]').ax5combobox("enable");
- * $('[data-ax5combobox="ax1"]').ax5combobox("disable");
- * </script>
- * ```
- */
-
-ax5.ui.combobox_instance = new ax5.ui.combobox();
-jQuery.fn.ax5combobox = function () {
-    return function (config) {
-        if (ax5.util.isString(arguments[0])) {
-            var methodName = arguments[0];
-
-            switch (methodName) {
-                case "open":
-                    return ax5.ui.combobox_instance.open(this);
-                    break;
-                case "close":
-                    return ax5.ui.combobox_instance.close(this);
-                    break;
-                case "setValue":
-                    return ax5.ui.combobox_instance.setValue(this, arguments[1], arguments[2], arguments[3], arguments[4] || "justSetValue");
-                    break;
-                case "setText":
-                    return ax5.ui.combobox_instance.setText(this, arguments[1], arguments[2], arguments[3], arguments[4] || "justSetValue");
-                    break;
-                case "getSelectedOption":
-                    return ax5.ui.combobox_instance.getSelectedOption(this);
-                    break;
-                case "enable":
-                    return ax5.ui.combobox_instance.enable(this);
-                    break;
-                case "disable":
-                    return ax5.ui.combobox_instance.disable(this);
-                    break;
-                case "blur":
-                    return ax5.ui.combobox_instance.blur(this);
-                default:
-                    return this;
-            }
-        } else {
-            if (typeof config == "undefined") config = {};
-            jQuery.each(this, function () {
-                var defaultConfig = {
-                    target: this
-                };
-                config = jQuery.extend({}, config, defaultConfig);
-                ax5.ui.combobox_instance.bind(config);
-            });
-        }
-        return this;
-    };
-}();
 
 // ax5.ui.combobox.tmpl
 (function () {
@@ -1510,27 +1454,27 @@ jQuery.fn.ax5combobox = function () {
     var U = ax5.util;
 
     var optionGroup = function optionGroup(columnKeys) {
-        return "\n            <div class=\"ax5combobox-option-group {{theme}} {{size}}\" data-ax5combobox-option-group=\"{{id}}\">\n                <div class=\"ax-combobox-body\">\n                    <div class=\"ax-combobox-option-group-content\" data-els=\"content\"></div>\n                </div>\n                <div class=\"ax-combobox-arrow\"></div> \n            </div>\n        ";
+        return '\n            <div class="ax5combobox-option-group {{theme}} {{size}}" data-ax5combobox-option-group="{{id}}">\n                <div class="ax-combobox-body">\n                    <div class="ax-combobox-option-group-content" data-els="content"></div>\n                </div>\n                <div class="ax-combobox-arrow"></div> \n            </div>\n        ';
     };
 
     var comboboxDisplay = function comboboxDisplay(columnKeys) {
-        return "\n<div class=\"form-control {{formSize}} ax5combobox-display {{theme}}\" \ndata-ax5combobox-display=\"{{id}}\" data-ax5combobox-instance=\"{{instanceId}}\">\n    <div class=\"ax5combobox-display-table\" data-els=\"display-table\">\n        <div data-ax5combobox-display=\"label-holder\"> \n            <a {{^tabIndex}}{{/tabIndex}}{{#tabIndex}}tabindex=\"{{tabIndex}}\" {{/tabIndex}}\n            data-ax5combobox-display=\"label\"\n            spellcheck=\"false\"><input type=\"text\"data-ax5combobox-display=\"input\" style=\"border:0px none;background: transparent;\" /></a>\n        </div>\n        <div data-ax5combobox-display=\"addon\"> \n            {{#multiple}}{{#reset}}\n            <span class=\"addon-icon-reset\" data-selected-clear=\"true\">{{{.}}}</span>\n            {{/reset}}{{/multiple}}\n            {{#icons}}\n            <span class=\"addon-icon-closed\">{{clesed}}</span>\n            <span class=\"addon-icon-opened\">{{opened}}</span>\n            {{/icons}}\n            {{^icons}}\n            <span class=\"addon-icon-closed\"><span class=\"addon-icon-arrow\"></span></span>\n            <span class=\"addon-icon-opened\"><span class=\"addon-icon-arrow\"></span></span>\n            {{/icons}}\n        </div>\n    </div>\n</div>\n        ";
+        return '\n<div class="form-control {{formSize}} ax5combobox-display {{theme}}" \ndata-ax5combobox-display="{{id}}" data-ax5combobox-instance="{{instanceId}}">\n    <div class="ax5combobox-display-table" data-els="display-table">\n        <div data-ax5combobox-display="label-holder"> \n            <a {{^tabIndex}}{{/tabIndex}}{{#tabIndex}}tabindex="{{tabIndex}}" {{/tabIndex}}\n            data-ax5combobox-display="label"\n            spellcheck="false"><input type="text"data-ax5combobox-display="input" style="border:0 none;" /></a>\n        </div>\n        <div data-ax5combobox-display="addon"> \n            {{#multiple}}{{#reset}}\n            <span class="addon-icon-reset" data-selected-clear="true">{{{.}}}</span>\n            {{/reset}}{{/multiple}}\n            {{#icons}}\n            <span class="addon-icon-closed">{{clesed}}</span>\n            <span class="addon-icon-opened">{{opened}}</span>\n            {{/icons}}\n            {{^icons}}\n            <span class="addon-icon-closed"><span class="addon-icon-arrow"></span></span>\n            <span class="addon-icon-opened"><span class="addon-icon-arrow"></span></span>\n            {{/icons}}\n        </div>\n    </div>\n</div>\n        ';
     };
 
     var formSelect = function formSelect(columnKeys) {
-        return "\n            <select tabindex=\"-1\" class=\"form-control {{formSize}}\" name=\"{{name}}\" {{#multiple}}multiple=\"multiple\"{{/multiple}}></select>\n        ";
+        return '\n            <select tabindex="-1" class="form-control {{formSize}}" name="{{name}}" {{#multiple}}multiple="multiple"{{/multiple}}></select>\n        ';
     };
 
     var formSelectOptions = function formSelectOptions(columnKeys) {
-        return "\n{{#selected}}\n<option value=\"{{" + columnKeys.optionValue + "}}\" selected=\"true\">{{" + columnKeys.optionText + "}}</option>\n{{/selected}}\n";
+        return '\n{{#selected}}\n<option value="{{' + columnKeys.optionValue + '}}" selected="true">{{' + columnKeys.optionText + '}}</option>\n{{/selected}}\n';
     };
 
     var options = function options(columnKeys) {
-        return "\n            {{#waitOptions}}\n                <div class=\"ax-combobox-option-item\">\n                        <div class=\"ax-combobox-option-item-holder\">\n                            <span class=\"ax-combobox-option-item-cell ax-combobox-option-item-label\">\n                                {{{lang.loading}}}\n                            </span>\n                        </div>\n                    </div>\n            {{/waitOptions}}\n            {{^waitOptions}}\n                {{#options}}\n                    {{#optgroup}}\n                        <div class=\"ax-combobox-option-group\">\n                            <div class=\"ax-combobox-option-item-holder\">\n                                <span class=\"ax-combobox-option-group-label\">\n                                    {{{.}}}\n                                </span>\n                            </div>\n                            {{#options}}\n                            {{^hide}}\n                            <div class=\"ax-combobox-option-item\" data-option-focus-index=\"{{@findex}}\" data-option-group-index=\"{{@gindex}}\" data-option-index=\"{{@index}}\" \n                            data-option-value=\"{{" + columnKeys.optionValue + "}}\" \n                            {{#" + columnKeys.optionSelected + "}}data-option-selected=\"true\"{{/" + columnKeys.optionSelected + "}}>\n                                <div class=\"ax-combobox-option-item-holder\">\n                                    {{#multiple}}\n                                    <span class=\"ax-combobox-option-item-cell ax-combobox-option-item-checkbox\">\n                                        <span class=\"item-checkbox-wrap useCheckBox\" data-option-checkbox-index=\"{{@i}}\"></span>\n                                    </span>\n                                    {{/multiple}}\n                                    <span class=\"ax-combobox-option-item-cell ax-combobox-option-item-label\">{{" + columnKeys.optionText + "}}</span>\n                                </div>\n                            </div>\n                            {{/hide}}\n                            {{/options}}\n                        </div>                            \n                    {{/optgroup}}\n                    {{^optgroup}}\n                    {{^hide}}\n                    <div class=\"ax-combobox-option-item\" data-option-focus-index=\"{{@findex}}\" data-option-index=\"{{@index}}\" data-option-value=\"{{" + columnKeys.optionValue + "}}\" {{#" + columnKeys.optionSelected + "}}data-option-selected=\"true\"{{/" + columnKeys.optionSelected + "}}>\n                        <div class=\"ax-combobox-option-item-holder\">\n                            {{#multiple}}\n                            <span class=\"ax-combobox-option-item-cell ax-combobox-option-item-checkbox\">\n                                <span class=\"item-checkbox-wrap useCheckBox\" data-option-checkbox-index=\"{{@i}}\"></span>\n                            </span>\n                            {{/multiple}}\n                            <span class=\"ax-combobox-option-item-cell ax-combobox-option-item-label\">{{" + columnKeys.optionText + "}}</span>\n                        </div>\n                    </div>\n                    {{/hide}}\n                    {{/optgroup}}\n                {{/options}}\n                {{^options}}\n                    <div class=\"ax-combobox-option-item\">\n                        <div class=\"ax-combobox-option-item-holder\">\n                            <span class=\"ax-combobox-option-item-cell ax-combobox-option-item-label\">\n                                {{{lang.noOptions}}}\n                            </span>\n                        </div>\n                    </div>\n                {{/options}}\n            {{/waitOptions}}\n        ";
+        return '\n            {{#waitOptions}}\n                <div class="ax-combobox-option-item">\n                        <div class="ax-combobox-option-item-holder">\n                            <span class="ax-combobox-option-item-cell ax-combobox-option-item-label">\n                                {{{lang.loading}}}\n                            </span>\n                        </div>\n                    </div>\n            {{/waitOptions}}\n            {{^waitOptions}}\n                {{#options}}\n                    {{#optgroup}}\n                        <div class="ax-combobox-option-group">\n                            <div class="ax-combobox-option-item-holder">\n                                <span class="ax-combobox-option-group-label">\n                                    {{{.}}}\n                                </span>\n                            </div>\n                            {{#options}}\n                            {{^hide}}\n                            <div class="ax-combobox-option-item" data-option-focus-index="{{@findex}}" data-option-group-index="{{@gindex}}" data-option-index="{{@index}}" \n                            data-option-value="{{' + columnKeys.optionValue + '}}" \n                            {{#' + columnKeys.optionSelected + '}}data-option-selected="true"{{/' + columnKeys.optionSelected + '}}>\n                                <div class="ax-combobox-option-item-holder">\n                                    {{#multiple}}\n                                    <span class="ax-combobox-option-item-cell ax-combobox-option-item-checkbox">\n                                        <span class="item-checkbox-wrap useCheckBox" data-option-checkbox-index="{{@i}}"></span>\n                                    </span>\n                                    {{/multiple}}\n                                    <span class="ax-combobox-option-item-cell ax-combobox-option-item-label">{{' + columnKeys.optionText + '}}</span>\n                                </div>\n                            </div>\n                            {{/hide}}\n                            {{/options}}\n                        </div>                            \n                    {{/optgroup}}\n                    {{^optgroup}}\n                    {{^hide}}\n                    <div class="ax-combobox-option-item" data-option-focus-index="{{@findex}}" data-option-index="{{@index}}" data-option-value="{{' + columnKeys.optionValue + '}}" {{#' + columnKeys.optionSelected + '}}data-option-selected="true"{{/' + columnKeys.optionSelected + '}}>\n                        <div class="ax-combobox-option-item-holder">\n                            {{#multiple}}\n                            <span class="ax-combobox-option-item-cell ax-combobox-option-item-checkbox">\n                                <span class="item-checkbox-wrap useCheckBox" data-option-checkbox-index="{{@i}}"></span>\n                            </span>\n                            {{/multiple}}\n                            <span class="ax-combobox-option-item-cell ax-combobox-option-item-label">{{' + columnKeys.optionText + '}}</span>\n                        </div>\n                    </div>\n                    {{/hide}}\n                    {{/optgroup}}\n                {{/options}}\n                {{^options}}\n                    <div class="ax-combobox-option-item">\n                        <div class="ax-combobox-option-item-holder">\n                            <span class="ax-combobox-option-item-cell ax-combobox-option-item-label">\n                                {{{lang.noOptions}}}\n                            </span>\n                        </div>\n                    </div>\n                {{/options}}\n            {{/waitOptions}}\n        ';
     };
 
     var label = function label(columnKeys) {
-        return "{{#selected}}<div tabindex=\"-1\" data-ax5combobox-selected-label=\"{{@i}}\" data-ax5combobox-selected-text=\"{{text}}\"><div data-ax5combobox-remove=\"true\" \ndata-ax5combobox-remove-index=\"{{@i}}\">{{{removeIcon}}}</div><span>{{text}}</span></div>{{/selected}}";
+        return '{{#selected}}<div tabindex="-1" data-ax5combobox-selected-label="{{@i}}" data-ax5combobox-selected-text="{{text}}"><div data-ax5combobox-remove="true" \ndata-ax5combobox-remove-index="{{@i}}">{{{removeIcon}}}</div><span>{{' + columnKeys.optionText + '}}</span></div>{{/selected}}';
     };
 
     COMBOBOX.tmpl = {
@@ -1638,3 +1582,86 @@ jQuery.fn.ax5combobox = function () {
         nodeTypeProcessor: nodeTypeProcessor
     };
 })();
+
+/*
+ * Copyright (c) 2017. tom@axisj.com
+ * - github.com/thomasjang
+ * - www.axisj.com
+ */
+
+/**
+ * ax5combobox jquery extends
+ * @namespace jQueryExtends
+ */
+
+/**
+ * @method jQueryExtends.ax5combobox
+ * @param {String} methodName
+ * @param [arguments]
+ * @param [arguments]
+ * @example
+ * ```html
+ * <div data-ax5combobox="ax1" data-ax5combobox-config='{
+ *  multiple: true,
+ *  editable: true,
+ *  size: "",
+ *  theme:""
+ *  }'></div>
+ * <script>
+ * jQuery('[data-ax5combobox="ax1"]').ax5combobox();
+ * $('[data-ax5combobox="ax1"]').ax5combobox("getSelectedOption");
+ * $('[data-ax5combobox="ax1"]').ax5combobox("setValue", ["string", "number"]);
+ * $('[data-ax5combobox="ax1"]').ax5combobox("enable");
+ * $('[data-ax5combobox="ax1"]').ax5combobox("disable");
+ * </script>
+ * ```
+ */
+
+ax5.ui.combobox_instance = new ax5.ui.combobox();
+jQuery.fn.ax5combobox = function () {
+    return function (config) {
+        if (ax5.util.isString(arguments[0])) {
+            var methodName = arguments[0];
+
+            switch (methodName) {
+                case "open":
+                    return ax5.ui.combobox_instance.open(this);
+                    break;
+                case "close":
+                    return ax5.ui.combobox_instance.close(this);
+                    break;
+                case "setValue":
+                    return ax5.ui.combobox_instance.setValue(this, arguments[1], arguments[2], arguments[3], arguments[4] || "justSetValue");
+                    break;
+                case "setText":
+                    return ax5.ui.combobox_instance.setText(this, arguments[1], arguments[2], arguments[3], arguments[4] || "justSetValue");
+                    break;
+                case "getSelectedOption":
+                    return ax5.ui.combobox_instance.getSelectedOption(this);
+                    break;
+                case "enable":
+                    return ax5.ui.combobox_instance.enable(this);
+                    break;
+                case "disable":
+                    return ax5.ui.combobox_instance.disable(this);
+                    break;
+                case "blur":
+                    return ax5.ui.combobox_instance.blur(this);
+                case "clear":
+                    return ax5.ui.combobox_instance.clear(this);
+                default:
+                    return this;
+            }
+        } else {
+            if (typeof config == "undefined") config = {};
+            jQuery.each(this, function () {
+                var defaultConfig = {
+                    target: this
+                };
+                config = jQuery.extend({}, config, defaultConfig);
+                ax5.ui.combobox_instance.bind(config);
+            });
+        }
+        return this;
+    };
+}();

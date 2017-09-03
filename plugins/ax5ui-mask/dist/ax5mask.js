@@ -1,15 +1,14 @@
-"use strict";
+'use strict';
 
 // ax5.ui.mask
 (function () {
 
     var UI = ax5.ui;
     var U = ax5.util;
-    var MASK;
+    var MASK = void 0;
 
     UI.addClass({
-        className: "mask",
-        version: "1.3.44"
+        className: "mask"
     }, function () {
         /**
          * @class ax5mask
@@ -41,14 +40,15 @@
          * });
          * ```
          */
-        var ax5mask = function ax5mask() {
+        return function () {
             var self = this,
-                cfg;
+                cfg = void 0;
 
             this.instanceId = ax5.getGuid();
             this.config = {
                 theme: '',
-                target: jQuery(document.body).get(0)
+                target: jQuery(document.body).get(0),
+                animateTime: 250
             };
             this.maskContent = '';
             this.status = "off";
@@ -65,12 +65,12 @@
                 opts = null;
                 that = null;
                 return true;
-            },
-                getBodyTmpl = function getBodyTmpl(data) {
+            };
+            var getBodyTmpl = function getBodyTmpl(data) {
                 if (typeof data.templateName === "undefined") data.templateName = "defaultMask";
                 return MASK.tmpl.get.call(this, data.templateName, data);
-            },
-                setBody = function setBody(content) {
+            };
+            var setBody = function setBody(content) {
                 this.maskContent = content;
             };
 
@@ -149,28 +149,17 @@
                 if (this.status === "on") this.close();
                 if (options && options.content) setBody.call(this, options.content);
                 if (options && typeof options.templateName === "undefined") options.templateName = "defaultMask";
-                self.maskConfig = {};
-
-                jQuery.extend(true, self.maskConfig, this.config, options);
+                self.maskConfig = jQuery.extend(true, {}, this.config, options);
 
                 var _cfg = self.maskConfig,
                     target = _cfg.target,
                     $target = jQuery(target),
                     maskId = 'ax-mask-' + ax5.getGuid(),
-                    $mask,
+                    $mask = void 0,
                     css = {},
                     that = {},
                     templateName = _cfg.templateName,
-
-                /*
-                 bodyTmpl = getBodyTmpl(),
-                 body = ax5.mustache.render(bodyTmpl, {
-                 theme: _cfg.theme,
-                 maskId: maskId,
-                 body: this.maskContent
-                 });
-                 */
-                body = getBodyTmpl({
+                    body = getBodyTmpl({
                     theme: _cfg.theme,
                     maskId: maskId,
                     body: this.maskContent,
@@ -189,15 +178,16 @@
                         height: $target.outerHeight()
                     };
 
-                    if (typeof self.maskConfig.zIndex !== "undefined") {
-                        css["z-index"] = self.maskConfig.zIndex;
-                    }
                     $target.addClass("ax-masking");
 
                     // 마스크의 타겟이 html body가 아닌경우 window resize 이벤트를 추적하여 엘리먼트 마스크의 CSS 속성 변경
-                    jQuery(window).bind("resize.ax5mask-" + this.instanceId, function (_$target) {
+                    jQuery(window).on("resize.ax5mask-" + this.instanceId, function (_$target) {
                         this.align();
                     }.bind(this));
+                }
+
+                if (typeof self.maskConfig.zIndex !== "undefined") {
+                    css["z-index"] = self.maskConfig.zIndex;
                 }
 
                 this.$mask = $mask = jQuery("#" + maskId);
@@ -257,7 +247,7 @@
                             state: "close"
                         });
 
-                        jQuery(window).unbind("resize.ax5mask-" + this.instanceId);
+                        jQuery(window).off("resize.ax5mask-" + this.instanceId);
                     };
 
                     if (_delay) {
@@ -270,7 +260,33 @@
                 }
                 return this;
             };
-            //== class body end
+
+            /**
+             * @method ax5mask.fadeOut
+             * @returns {ax5mask}
+             */
+            this.fadeOut = function () {
+                if (this.$mask) {
+                    var _close = function _close() {
+                        this.status = "off";
+                        this.$mask.remove();
+                        this.$target.removeClass("ax-masking");
+
+                        onStateChanged.call(this, null, {
+                            self: this,
+                            state: "close"
+                        });
+
+                        jQuery(window).off("resize.ax5mask-" + this.instanceId);
+                    };
+
+                    this.$mask.addClass("fade-out");
+                    setTimeout(function () {
+                        _close.call(this);
+                    }.bind(this), cfg.animateTime);
+                }
+                return this;
+            };
 
             /**
              * @method ax5mask.align
@@ -308,7 +324,6 @@
                 }
             }.apply(this, arguments);
         };
-        return ax5mask;
     }());
     MASK = ax5.ui.mask;
 })();
@@ -318,7 +333,7 @@
     var MASK = ax5.ui.mask;
 
     var defaultMask = function defaultMask(columnKeys) {
-        return "\n            <div class=\"ax-mask {{theme}}\" id=\"{{maskId}}\">\n                <div class=\"ax-mask-bg\"></div>\n                <div class=\"ax-mask-content\">\n                    <div class=\"ax-mask-body\">\n                    {{{body}}}\n                    </div>\n                </div>\n            </div>\n        ";
+        return '\n            <div class="ax-mask {{theme}}" id="{{maskId}}">\n                <div class="ax-mask-bg"></div>\n                <div class="ax-mask-content">\n                    <div class="ax-mask-body">\n                    {{{body}}}\n                    </div>\n                </div>\n            </div>\n        ';
     };
 
     MASK.tmpl = {

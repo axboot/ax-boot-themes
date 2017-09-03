@@ -1,13 +1,12 @@
 // ax5.ui.mask
 (function () {
 
-    var UI = ax5.ui;
-    var U = ax5.util;
-    var MASK;
+    const UI = ax5.ui;
+    const U = ax5.util;
+    let MASK;
 
     UI.addClass({
-        className: "mask",
-        version: "${VERSION}"
+        className: "mask"
     }, (function () {
         /**
          * @class ax5mask
@@ -39,40 +38,40 @@
          * });
          * ```
          */
-        var ax5mask = function () {
-            var self = this,
+        return function () {
+            let self = this,
                 cfg;
 
             this.instanceId = ax5.getGuid();
             this.config = {
                 theme: '',
-                target: jQuery(document.body).get(0)
+                target: jQuery(document.body).get(0),
+                animateTime: 250
             };
             this.maskContent = '';
             this.status = "off";
 
             cfg = this.config;
 
-            var
-                onStateChanged = function (opts, that) {
-                    if (opts && opts.onStateChanged) {
-                        opts.onStateChanged.call(that, that);
-                    }
-                    else if (this.onStateChanged) {
-                        this.onStateChanged.call(that, that);
-                    }
+            const onStateChanged = function (opts, that) {
+                if (opts && opts.onStateChanged) {
+                    opts.onStateChanged.call(that, that);
+                }
+                else if (this.onStateChanged) {
+                    this.onStateChanged.call(that, that);
+                }
 
-                    opts = null;
-                    that = null;
-                    return true;
-                },
-                getBodyTmpl = function (data) {
-                    if (typeof data.templateName === "undefined") data.templateName = "defaultMask";
-                    return MASK.tmpl.get.call(this, data.templateName, data);
-                },
-                setBody = function (content) {
-                    this.maskContent = content;
-                };
+                opts = null;
+                that = null;
+                return true;
+            };
+            const getBodyTmpl = function (data) {
+                if (typeof data.templateName === "undefined") data.templateName = "defaultMask";
+                return MASK.tmpl.get.call(this, data.templateName, data);
+            };
+            const setBody = function (content) {
+                this.maskContent = content;
+            };
 
             /**
              * Preferences of Mask UI
@@ -149,11 +148,9 @@
                 if (this.status === "on") this.close();
                 if (options && options.content) setBody.call(this, options.content);
                 if (options && typeof options.templateName === "undefined") options.templateName = "defaultMask";
-                self.maskConfig = {};
+                self.maskConfig = jQuery.extend(true, {}, this.config, options);
 
-                jQuery.extend(true, self.maskConfig, this.config, options);
-
-                var _cfg = self.maskConfig,
+                let _cfg = self.maskConfig,
                     target = _cfg.target,
                     $target = jQuery(target),
                     maskId = 'ax-mask-' + ax5.getGuid(),
@@ -161,14 +158,6 @@
                     css = {},
                     that = {},
                     templateName = _cfg.templateName,
-                    /*
-                     bodyTmpl = getBodyTmpl(),
-                     body = ax5.mustache.render(bodyTmpl, {
-                     theme: _cfg.theme,
-                     maskId: maskId,
-                     body: this.maskContent
-                     });
-                     */
                     body = getBodyTmpl({
                         theme: _cfg.theme,
                         maskId: maskId,
@@ -177,7 +166,6 @@
                     });
 
                 jQuery(document.body).append(body);
-
 
                 // 마스크의 타겟이 html body 가 아니라면
                 if (target && target !== jQuery(document.body).get(0)) {
@@ -189,15 +177,17 @@
                         height: $target.outerHeight()
                     };
 
-                    if (typeof self.maskConfig.zIndex !== "undefined") {
-                        css["z-index"] = self.maskConfig.zIndex;
-                    }
+
                     $target.addClass("ax-masking");
 
                     // 마스크의 타겟이 html body가 아닌경우 window resize 이벤트를 추적하여 엘리먼트 마스크의 CSS 속성 변경
-                    jQuery(window).bind("resize.ax5mask-" + this.instanceId, (function (_$target) {
+                    jQuery(window).on("resize.ax5mask-" + this.instanceId, (function (_$target) {
                         this.align();
                     }).bind(this));
+                }
+
+                if (typeof self.maskConfig.zIndex !== "undefined") {
+                    css["z-index"] = self.maskConfig.zIndex;
                 }
 
                 this.$mask = $mask = jQuery("#" + maskId);
@@ -247,7 +237,7 @@
              */
             this.close = function (_delay) {
                 if (this.$mask) {
-                    var _close = function () {
+                    let _close = function () {
                         this.status = "off";
                         this.$mask.remove();
                         this.$target.removeClass("ax-masking");
@@ -257,9 +247,8 @@
                             state: "close"
                         });
 
-                        jQuery(window).unbind("resize.ax5mask-" + this.instanceId);
+                        jQuery(window).off("resize.ax5mask-" + this.instanceId);
                     };
-
 
                     if (_delay) {
                         setTimeout((function () {
@@ -271,7 +260,34 @@
                 }
                 return this;
             };
-            //== class body end
+
+            /**
+             * @method ax5mask.fadeOut
+             * @returns {ax5mask}
+             */
+            this.fadeOut = function () {
+                if (this.$mask) {
+                    let _close = function () {
+                        this.status = "off";
+                        this.$mask.remove();
+                        this.$target.removeClass("ax-masking");
+
+                        onStateChanged.call(this, null, {
+                            self: this,
+                            state: "close"
+                        });
+
+                        jQuery(window).off("resize.ax5mask-" + this.instanceId);
+                    };
+
+
+                    this.$mask.addClass("fade-out");
+                    setTimeout((function () {
+                        _close.call(this);
+                    }).bind(this), cfg.animateTime);
+                }
+                return this;
+            };
 
             /**
              * @method ax5mask.align
@@ -312,7 +328,6 @@
                 }
             }).apply(this, arguments);
         };
-        return ax5mask;
     })());
     MASK = ax5.ui.mask;
 })();

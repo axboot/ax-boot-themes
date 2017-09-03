@@ -1,10 +1,11 @@
 // ax5.ui.grid.page
 (function () {
 
-    var GRID = ax5.ui.grid;
-    var U = ax5.util;
+    const GRID = ax5.ui.grid;
 
-    var onclickPageMove = function (_act) {
+    const U = ax5.util;
+
+    const onclickPageMove = function (_act) {
         var callback = function (_pageNo) {
             if (this.page.currentPage != _pageNo) {
                 this.page.selectPage = _pageNo;
@@ -40,14 +41,14 @@
             processor[_act].call(this);
         }
         else {
-            callback.call(this, _act-1);
+            callback.call(this, _act - 1);
         }
     };
 
-    var navigationUpdate = function () {
-        var self = this;
+    const navigationUpdate = function () {
+        let self = this;
         if (this.page) {
-            var page = {
+            let page = {
                 hasPage: false,
                 currentPage: this.page.currentPage,
                 pageSize: this.page.pageSize,
@@ -58,61 +59,79 @@
                 nextIcon: this.config.page.nextIcon || "»",
                 lastIcon: this.config.page.lastIcon,
             };
-            var navigationItemCount = this.config.page.navigationItemCount;
-
+            let navigationItemCount = this.config.page.navigationItemCount;
 
             page["@paging"] = (function () {
-                var returns = [];
+                let returns = [], startI, endI;
 
-                var startI = page.currentPage - Math.floor(navigationItemCount / 2);
+                startI = page.currentPage - Math.floor(navigationItemCount / 2);
                 if (startI < 0) startI = 0;
-                var endI = page.currentPage + navigationItemCount;
+                endI = page.currentPage + navigationItemCount;
                 if (endI > page.totalPages) endI = page.totalPages;
 
                 if (endI - startI > navigationItemCount) {
                     endI = startI + navigationItemCount;
                 }
 
-                if(endI - startI < navigationItemCount){
+                if (endI - startI < navigationItemCount) {
                     startI = endI - navigationItemCount;
                 }
                 if (startI < 0) startI = 0;
 
-                for (var p = startI, l = endI; p < l; p++) {
+                for (let p = startI, l = endI; p < l; p++) {
                     returns.push({'pageNo': (p + 1), 'selected': page.currentPage == p});
                 }
                 return returns;
             })();
 
-            if(page["@paging"].length > 0){
+            if (page["@paging"].length > 0) {
                 page.hasPage = true;
             }
 
             this.$["page"]["navigation"].html(GRID.tmpl.get("page_navigation", page));
             this.$["page"]["navigation"].find("[data-ax5grid-page-move]").on("click", function () {
-                var act = this.getAttribute("data-ax5grid-page-move");
-                onclickPageMove.call(self, act);
+                onclickPageMove.call(self, this.getAttribute("data-ax5grid-page-move"));
             });
+
         } else {
             this.$["page"]["navigation"].empty();
         }
     };
 
-    var statusUpdate = function () {
-        var fromRowIndex = this.xvar.paintStartRowIndex;
-        var toRowIndex = this.xvar.paintStartRowIndex + this.xvar.paintRowCount - 1;
-        //var totalElements = (this.page && this.page.totalElements) ? this.page.totalElements : this.xvar.dataRowCount;
-        var totalElements = this.xvar.dataRowCount;
-        if (toRowIndex > totalElements) {
-            toRowIndex = totalElements;
+    const statusUpdate = function () {
+        if (!this.config.page.statusDisplay) {
+            return;
         }
 
-        this.$["page"]["status"].html(GRID.tmpl.get("page_status", {
-            fromRowIndex: U.number(fromRowIndex + 1, {"money": true}),
-            toRowIndex: U.number(toRowIndex, {"money": true}),
-            totalElements: U.number(totalElements, {"money": true}),
-            dataRowCount: (totalElements !== this.xvar.dataRealRowCount) ? U.number(this.xvar.dataRealRowCount, {"money": true}) : false
-        }));
+        let toRowIndex, rangeCount = Math.min(this.xvar.dataRowCount, this.xvar.virtualPaintRowCount);
+        let data = {};
+
+        toRowIndex = this.xvar.virtualPaintStartRowIndex + rangeCount;
+
+        if (toRowIndex > this.xvar.dataRowCount) {
+            toRowIndex = this.xvar.dataRowCount;
+        }
+
+        data.fromRowIndex = U.number(this.xvar.virtualPaintStartRowIndex + 1, {"money": true});
+        data.toRowIndex = U.number(toRowIndex, {"money": true});
+        data.totalElements = false;
+        data.dataRealRowCount = (this.xvar.dataRowCount !== this.xvar.dataRealRowCount) ? U.number(this.xvar.dataRealRowCount, {"money": true}) : false;
+        data.dataRowCount = U.number(this.xvar.dataRowCount, {"money": true});
+        data.progress = (this.appendProgress) ? this.config.appendProgressIcon : "";
+
+        if (this.page) {
+            data.fromRowIndex_page = U.number(this.xvar.virtualPaintStartRowIndex + (this.page.currentPage * this.page.pageSize) + 1, {"money": true});
+            data.toRowIndex_page = U.number(this.xvar.virtualPaintStartRowIndex + rangeCount + (this.page.currentPage * this.page.pageSize), {"money": true});
+            data.totalElements = U.number(this.page.totalElements, {"money": true});
+
+            if (data.toRowIndex_page > this.page.totalElements) {
+                data.toRowIndex_page = this.page.totalElements;
+            }
+        }
+
+        this.$["page"]["status"].html(
+            GRID.tmpl.get("page_status", data)
+        );
     };
 
     GRID.page = {
